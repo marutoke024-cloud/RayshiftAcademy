@@ -783,7 +783,9 @@ a {
 /* セクション区切り（実線）。マシュコメントの直下に置く */
 .section-divider {
   border: none;
-  border-top: 1.5px solid var(--border-strong);
+  height: 1.5px;
+  background-color: var(--primary-soft-2); /* 薄紫 #ddd0f0 */
+  color: transparent;
   margin: 14px 0 22px;
 }
 
