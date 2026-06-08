@@ -1,0 +1,10 @@
+# OS / editor
+Thumbs.db
+.DS_Store
+*.log
+
+# Local secrets (do NOT commit real Firebase keys here if you prefer to keep them private)
+# js/config/firebase-config.local.js
+
+# Dependencies (not used in this no-build project, kept for safety)
+node_modules/

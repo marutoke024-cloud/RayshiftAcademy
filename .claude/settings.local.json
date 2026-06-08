@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($paths = @\\(\"$env:ProgramFiles\\\\nodejs\\\\node.exe\",\"${env:ProgramFiles\\(x86\\)}\\\\nodejs\\\\node.exe\",\"$env:LOCALAPPDATA\\\\Programs\\\\nodejs\\\\node.exe\",\"$env:APPDATA\\\\npm\\\\node.exe\"\\); foreach\\($p in $paths\\){ if\\(Test-Path $p\\){ Write-Output \"FOUND: $p\" } }; Write-Output \"nvm: $\\(Test-Path \"$env:APPDATA\\\\nvm\"\\)\"; where.exe node 2>$null; Write-Output \"done\")",
+      "PowerShell(git -C $root init -b main 2>&1)",
+      "PowerShell(git -C $root config user.name \"marutoke024-cloud\" 2>&1)",
+      "PowerShell($root = \"C:\\\\Users\\\\�ύ��݃J�v�`�[�m\\\\OneDrive\\\\�h�L�������g\\\\RayshiftAcademy\")",
+      "PowerShell(\"git ready\")",
+      "mcp__Claude_Preview__preview_start",
+      "PowerShell(try { $r = Invoke-WebRequest -UseBasicParsing \"http://localhost:5500/index.html\" -TimeoutSec 8; \"OK $\\($r.StatusCode\\)\" } catch { $s=$_.Exception.Response; if\\($s\\){ $sr=New-Object System.IO.StreamReader\\($s.GetResponseStream\\(\\)\\); \"BODY: \" + $sr.ReadToEnd\\(\\) } else { \"ERR: $\\($_.Exception.Message\\)\" } })"
+    ]
+  }
+}
