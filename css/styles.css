@@ -799,6 +799,38 @@ hr,
   margin: 14px 0 22px;
 }
 
+/* 解説セグメント（文章＋マシュの一口コメント）
+   既定（スマホ/狭い画面）は縦積み。広い画面では横並びにして右側の余白を活用。 */
+.learn-segment {
+  margin-bottom: 2px;
+}
+
+@media (min-width: 860px) {
+  .learn-segment {
+    display: flex;
+    align-items: flex-end; /* コメントを文章ブロックの右「下」に揃える */
+    gap: 28px;
+  }
+  .learn-segment > .md-body {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .learn-segment > .mash-comment {
+    /* 文章の隣（右下）。画面右端までは伸ばさない固定幅レンジ */
+    flex: 0 0 clamp(300px, 32%, 380px);
+    margin: 0 0 6px; /* 下端基準なので上マージンは不要 */
+  }
+  /* 文章が無くコメントのみのセグメントは右寄せ */
+  .learn-segment > .mash-comment:only-child {
+    margin-left: auto;
+  }
+  /* 横並び時はアイコンを少し小さくして吹き出しの幅を確保 */
+  .learn-segment > .mash-comment .mash-comment-icon {
+    width: 64px;
+    height: 64px;
+  }
+}
+
 /* マシュのひとことコメント（吹き出し） */
 .mash-comment {
   display: flex;

@@ -43,9 +43,11 @@ export async function createMashBubble(text, opts = {}) {
       width="${size}" height="${size}"
       onerror="this.onerror=null;this.outerHTML='<div class=&quot;mash-avatar mash-placeholder&quot; style=&quot;width:${size}px;height:${size}px&quot;>マシュ</div>'" />`;
 
+  // 改行（句点改行など）を <br> として表示
+  const speechHtml = escapeHtml(text).replace(/\n/g, "<br>");
   el.innerHTML = `
     ${avatar}
-    <div class="mash-speech">${escapeHtml(text)}</div>
+    <div class="mash-speech">${speechHtml}</div>
   `;
   return el;
 }

@@ -96,8 +96,10 @@ export async function renderLearn(root, curriculumId, stepId) {
   // 一口メモ（マシュ吹き出し）
   const memoArea = root.querySelector("#memo-area");
   const bubble = await createMashBubble(
-    memoText ||
-      "先輩、ここまでお疲れさまです！ 次はリコールで、学んだことを自分の言葉にしてみましょう。"
+    breakAfterPeriods(
+      memoText ||
+        "先輩、ここまでお疲れさまです！ 次はリコールで、学んだことを自分の言葉にしてみましょう。"
+    ).trim()
   );
   const label = document.createElement("div");
   label.className = "section-title";
@@ -142,28 +144,33 @@ function buildSectionsHTML(bodyMd) {
   // mash_comment マーカー単位で本文を区切る。
   // → 見出しレベル（##/###）に関係なく、コメントが書かれた各セグメントの
   //   「文章の下・実線の上」にコメントを表示できる。
+  // コメントが書かれた各セグメントを 1 つの .learn-segment（文章＋コメント）に
+  // まとめる。広い画面では文章の右下にコメントを横並び配置（CSS 側で制御）。
   const re = /<!--\s*mash_comment:\s*([\s\S]*?)-->/gi;
   let html = "";
   let last = 0;
   let m;
 
-  const renderChunk = (md) => {
-    if (md && md.trim()) {
-      html += `<div class="md-body">${renderMarkdown(breakAfterPeriods(md))}</div>`;
+  const renderSegment = (md, comment) => {
+    const hasBody = md && md.trim();
+    if (!hasBody && !comment) return;
+    const body = hasBody
+      ? `<div class="md-body">${renderMarkdown(breakAfterPeriods(md))}</div>`
+      : "";
+    html += `<div class="learn-segment">${body}${
+      comment ? mashCommentHTML(comment) : ""
+    }</div>`;
+    if (comment) {
+      html += `<hr class="section-divider" />`;
     }
   };
 
   while ((m = re.exec(bodyMd)) !== null) {
-    renderChunk(bodyMd.slice(last, m.index));
-    const comment = (m[1] || "").trim();
-    if (comment) {
-      html += mashCommentHTML(comment);
-      html += `<hr class="section-divider" />`;
-    }
+    renderSegment(bodyMd.slice(last, m.index), (m[1] || "").trim());
     last = m.index + m[0].length;
   }
   // 末尾（最後のコメント以降）
-  renderChunk(bodyMd.slice(last));
+  renderSegment(bodyMd.slice(last), "");
   return html;
 }
 
