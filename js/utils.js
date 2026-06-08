@@ -43,13 +43,29 @@ export function isMobileDevice() {
 }
 
 /**
+ * タッチ主体（粗いポインタ）の端末かどうか。
+ */
+function isCoarsePointer() {
+  return !!(
+    window.matchMedia && window.matchMedia("(pointer: coarse)").matches
+  );
+}
+
+/**
  * デバイス判定。
- * 仕様: 画面幅 1024px 以上 = PC（全機能）、未満 = スマホ/iPad（復習のみ）。
- * さらに、モバイル/タブレット端末は幅に関わらず復習専用（PC ではない）とする。
+ * 方針:
+ *   - 本物のスマホ/タブレット（userAgent 判定）は常に復習専用（PC ではない）。
+ *   - タッチ主体の端末は、画面幅が狭い（<1024px）ときのみ復習専用。
+ *   - デスクトップブラウザ（マウス等）はウィンドウ幅に関係なく全機能（PC）。
+ *
+ * 以前は「幅 <1024 なら一律モバイル」としていたが、これだと PC の
+ * ウィンドウを少し狭めただけでメイン画面のボタンが消えてしまうため、
+ * デスクトップ環境では幅で復習専用にしないように修正。
  */
 export function isPC() {
-  if (isMobileDevice()) return false;
-  return window.innerWidth >= 1024;
+  if (isMobileDevice()) return false; // スマホ/タブレット実機
+  if (isCoarsePointer() && window.innerWidth < 1024) return false; // 狭いタッチ端末
+  return true; // デスクトップブラウザは常に全機能
 }
 
 /** body の data-device 用クラス */

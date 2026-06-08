@@ -7,8 +7,8 @@
 import { store } from "../storage/store.js";
 import { escapeHtml } from "../utils.js";
 
-// 同梱の静的画像（インポート画像が無いときのフォールバック）
-const STATIC_MASH = "./assets/mash_bg.jpg";
+// 同梱の静的アイコン（インポート画像が無いときのフォールバック）
+const STATIC_MASH = "./assets/mash_icon.png";
 
 let cachedMashUrl;
 

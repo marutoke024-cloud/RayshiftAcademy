@@ -73,9 +73,9 @@ a {
   position: fixed;
   right: 0;
   bottom: 0;
-  height: 66vh;
-  width: 48vw;
-  max-width: 560px;
+  height: 90vh;
+  width: 66vh; /* 画像の縦横比に合わせた箱（縦長） */
+  max-width: 78vw;
   background: url("../assets/mash_bg.jpg") no-repeat right bottom;
   background-size: contain;
   opacity: 0.15;
@@ -113,11 +113,10 @@ a {
   font-weight: 700;
 }
 .brand-logo {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  object-fit: cover;
-  object-position: 50% 18%; /* マシュの顔が見えるように上寄せ */
+  object-fit: contain; /* チビマシュ全身を表示 */
   border: 2px solid rgba(255, 255, 255, 0.85);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   background: #fff;
@@ -266,7 +265,9 @@ a {
   flex-shrink: 0;
 }
 .mash-avatar.is-fallback {
-  object-position: 50% 12%; /* 全身イラスト→顔が見えるよう上寄せ */
+  object-fit: contain; /* チビマシュ全身を表示 */
+  object-position: center;
+  background: var(--surface-2);
 }
 .mash-placeholder {
   display: flex;
@@ -791,16 +792,13 @@ a {
   margin: 14px 0 4px;
 }
 .mash-comment-icon {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain; /* チビマシュ全身を表示 */
   flex-shrink: 0;
   border: 2px solid var(--primary-soft-2);
   background: var(--surface-2);
-}
-.mash-comment-icon.is-fallback {
-  object-position: 50% 14%; /* イラスト全身→顔が見えるよう上寄せ */
 }
 .mash-comment-text {
   position: relative;

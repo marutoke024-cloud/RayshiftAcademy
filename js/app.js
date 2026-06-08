@@ -94,7 +94,7 @@ function setupHeader() {
   if (!header) return;
   header.innerHTML = `
     <a class="brand" href="#/">
-      <img class="brand-logo" src="./assets/mash_bg.jpg" alt="Rayshift Academy"
+      <img class="brand-logo" src="./assets/mash_icon.png" alt="Rayshift Academy"
         onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'brand-mark',textContent:'✨'}))" />
       <span class="brand-name">Rayshift&nbsp;Academy</span>
     </a>
