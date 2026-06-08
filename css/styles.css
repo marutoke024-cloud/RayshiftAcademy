@@ -779,13 +779,23 @@ a {
   margin-top: 6px;
 }
 
-/* セクション区切りと、その直上のマシュコメント */
-/* セクション区切り（実線）。マシュコメントの直下に置く */
+/* すべての <hr> を薄紫の実線に統一（ブラウザ既定の黒線を一掃）。
+   marked.js が markdown の "---" から生成する素の <hr> もここで上書きされる。 */
+hr,
+.md-body hr,
 .section-divider {
-  border: none;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
   height: 1.5px;
   background-color: var(--primary-soft-2); /* 薄紫 #ddd0f0 */
+  background-image: none;
   color: transparent;
+  margin: 14px 0;
+}
+
+/* セクション区切り（マシュコメント直下）は下マージンを広めに */
+.section-divider {
   margin: 14px 0 22px;
 }
 
