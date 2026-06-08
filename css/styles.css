@@ -998,3 +998,95 @@ textarea.field-input:focus {
     flex-direction: column;
   }
 }
+
+/* =====================================================================
+   Phase 4: モバイル最適化（Galaxy S25 / iPad Air など）
+   ===================================================================== */
+
+/* 画面外へのはみ出し防止 & 画像の縮小 */
+html,
+body {
+  overflow-x: hidden;
+}
+.md-body img,
+.mash-avatar,
+.mastery-badge-img {
+  max-width: 100%;
+  height: auto;
+}
+.review-title,
+.step-key,
+.flow-steptitle {
+  overflow-wrap: anywhere;
+}
+
+/* タッチ端末: タップ領域を 44px 以上に */
+@media (hover: none), (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+    padding: 11px 18px;
+  }
+  .step-row {
+    padding: 16px;
+  }
+  .review-explanation summary {
+    padding: 14px 0;
+  }
+  /* タップ時のハイライトを抑制 */
+  .btn,
+  .curriculum-card,
+  .step-row,
+  .review-explanation summary {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* モバイル（復習専用）端末向けの微調整 */
+body[data-device="mobile"] .app-main {
+  /* iOS のセーフエリアに配慮 */
+  padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+}
+body[data-device="mobile"] .flow-steps {
+  display: none; /* 復習モードでは学習ステップ表示は不要 */
+}
+
+/* iPad ポートレート帯（〜900px）: 本棚は 2 カラムで詰めすぎない */
+@media (min-width: 641px) and (max-width: 900px) {
+  .bookshelf {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Galaxy S25 など狭幅スマホ（〜430px） */
+@media (max-width: 430px) {
+  :root {
+    --pad-x: 12px;
+  }
+  .brand {
+    font-size: 1.1rem;
+  }
+  .brand-name {
+    font-size: 1.05rem;
+  }
+  .device-pill {
+    font-size: 0.72rem;
+    padding: 3px 9px;
+  }
+  .flow-steptitle,
+  .detail-title {
+    font-size: 1.3rem;
+  }
+  .review-notes {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 14px;
+  }
+  .mix-actions .btn {
+    width: 100%;
+    min-width: 0;
+  }
+  .review-explanation {
+    padding: 2px 12px;
+  }
+}

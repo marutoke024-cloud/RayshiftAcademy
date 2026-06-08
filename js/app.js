@@ -7,7 +7,7 @@
 // =====================================================================
 
 import { store } from "./storage/store.js";
-import { isPC, toast } from "./utils.js";
+import { isPC, deviceClass, toast } from "./utils.js";
 import { renderHome } from "./views/home.js";
 import { renderCurriculumDetail } from "./views/detail.js";
 import { renderLearn } from "./views/learn.js";
@@ -56,6 +56,13 @@ async function route() {
       if (parts[2] === "step" && parts[3]) {
         const stepId = decodeURIComponent(parts[3]);
         const mode = parts[4] || "learn";
+        // モバイル/タブレットは復習専用 → 学習フローは復習モードへ誘導
+        if (!isPC()) {
+          toast("学習は PC で行えます。モバイルは復習専用です", "info");
+          await renderReview(root, curriculumId);
+          window.scrollTo({ top: 0 });
+          return;
+        }
         if (mode === "recall") {
           await renderRecall(root, curriculumId, stepId);
         } else if (mode === "feedback") {
@@ -96,7 +103,12 @@ function setupHeader() {
   `;
 }
 
+function applyDeviceClass() {
+  document.body.dataset.device = deviceClass();
+}
+
 async function boot() {
+  applyDeviceClass();
   setupHeader();
   try {
     await store.init();
@@ -107,8 +119,20 @@ async function boot() {
   }
 
   window.addEventListener("hashchange", route);
-  // 画面幅が変わったらヘッダーのモード表示を更新
-  window.addEventListener("resize", debounce(setupHeader, 200));
+
+  // 画面サイズ / 向きの変化に追従（PC⇔モバイルが切り替わったら再描画）
+  let lastPC = isPC();
+  const onResize = debounce(() => {
+    applyDeviceClass();
+    setupHeader();
+    const nowPC = isPC();
+    if (nowPC !== lastPC) {
+      lastPC = nowPC;
+      route(); // 利用可能機能が変わるので画面を作り直す
+    }
+  }, 200);
+  window.addEventListener("resize", onResize);
+  window.addEventListener("orientationchange", onResize);
 
   await route();
 }

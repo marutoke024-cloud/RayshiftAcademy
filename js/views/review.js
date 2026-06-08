@@ -21,7 +21,7 @@ export async function renderReview(root, curriculumId) {
   const steps = await store.getSteps(curriculumId);
   const completed = steps.filter((s) => s.status === "completed");
   const total = curriculum.total_steps || steps.length;
-  const isUnlocked =
+  const allDone =
     curriculum.status === "完了" ||
     (total > 0 && completed.length >= total);
 
@@ -45,22 +45,29 @@ export async function renderReview(root, curriculumId) {
 
   const body = root.querySelector("#review-body");
 
-  if (!isUnlocked) {
+  // まだ 1 つも完了していない場合のみロック表示
+  if (completed.length === 0) {
     body.innerHTML = `
       <div class="card empty-state">
         <div class="empty-emoji">🔒</div>
-        <p>復習モードは<strong>全ステップ完了</strong>で解放されます。</p>
-        <p class="empty-sub">現在 ${completed.length} / ${total} ステップ完了</p>
+        <p>まだ完了したステップがありません。</p>
+        <p class="empty-sub">学習を進める（PC）と、ここで復習できるようになります。</p>
       </div>`;
     return;
   }
 
-  if (steps.length === 0) {
-    body.innerHTML = `<div class="card empty-state"><p>ステップがありません。</p></div>`;
-    return;
+  // 全完了なら全ステップ、未完了なら完了済みステップのみを表示
+  const shown = allDone ? steps : completed;
+
+  if (!allDone) {
+    const banner = document.createElement("div");
+    banner.className = "growth-record";
+    banner.style.marginBottom = "12px";
+    banner.textContent = `完了済みの ${completed.length} / ${total} ステップを表示中（全ステップ完了で残りも揃います）`;
+    body.appendChild(banner);
   }
 
-  for (const s of steps) {
+  for (const s of shown) {
     body.appendChild(createReviewBlock(curriculum, s));
   }
 }

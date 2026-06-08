@@ -25,35 +25,36 @@ export async function renderHome(root) {
   const library = await getLibrary();
   const curricula = library.map((x) => x.curriculum);
   const completedStepCount = allCompletedSteps(library).length;
+  const pc = isPC();
 
-  // --- 今日のおすすめ ---
-  const recommendArea = document.createElement("section");
-  recommendArea.className = "recommend-area";
-  home.appendChild(recommendArea);
-  renderRecommendation(recommendArea, library);
+  if (pc) {
+    // --- 今日のおすすめ（PC のみ） ---
+    const recommendArea = document.createElement("section");
+    recommendArea.className = "recommend-area";
+    home.appendChild(recommendArea);
+    renderRecommendation(recommendArea, library);
 
-  // --- アクションバー（ミックス復習など） ---
-  const actions = document.createElement("section");
-  actions.className = "home-actions";
-  actions.innerHTML = `
-    <button class="btn btn-primary" id="mix-review" ${
-      completedStepCount > 0 ? "" : "disabled"
-    }>
-      🔀 ミックス復習
-    </button>
-    <span class="home-actions-note">${
-      completedStepCount > 0
-        ? `完了済み ${completedStepCount} ステップからランダム出題`
-        : "完了したステップが増えると利用できます"
-    }</span>
-  `;
-  actions
-    .querySelector("#mix-review")
-    .addEventListener("click", () => navigate("/mix-review"));
-  home.appendChild(actions);
+    // --- アクションバー（ミックス復習など・PC のみ） ---
+    const actions = document.createElement("section");
+    actions.className = "home-actions";
+    actions.innerHTML = `
+      <button class="btn btn-primary" id="mix-review" ${
+        completedStepCount > 0 ? "" : "disabled"
+      }>
+        🔀 ミックス復習
+      </button>
+      <span class="home-actions-note">${
+        completedStepCount > 0
+          ? `完了済み ${completedStepCount} ステップからランダム出題`
+          : "完了したステップが増えると利用できます"
+      }</span>
+    `;
+    actions
+      .querySelector("#mix-review")
+      .addEventListener("click", () => navigate("/mix-review"));
+    home.appendChild(actions);
 
-  // --- インポート（PC のみ） ---
-  if (isPC()) {
+    // --- インポート（PC のみ） ---
     const panel = createImportPanel(() => {
       resetMashImageCache();
       resetBadgeCache();
@@ -61,10 +62,12 @@ export async function renderHome(root) {
     });
     home.appendChild(panel);
   } else {
+    // --- モバイル: 復習専用の案内 ---
     const note = document.createElement("div");
     note.className = "mobile-note card";
-    note.innerHTML = `📱 スマホ／iPad では<strong>復習モードのみ</strong>利用できます。
-      学習・インポートは PC（画面幅 1024px 以上）で行ってください。`;
+    note.innerHTML = `📱 <strong>復習モード</strong>です。カリキュラムをタップすると、
+      完了したステップの解説・理解メモ・フィードバックを読み返せます。
+      <br>学習・インポートは PC で行ってください。`;
     home.appendChild(note);
   }
 
@@ -144,7 +147,13 @@ function curriculumCard(c) {
   // マスタリーバッジ（画像があれば画像、無ければ SVG）
   applyMasteryBadge(card.querySelector(".card-badge"), c.mastery || 0, 84);
 
-  const go = () => navigate(`/curriculum/${encodeURIComponent(c.id)}`);
+  // PC は学習ハブ（詳細）へ、モバイルは復習モードへ直行
+  const go = () =>
+    navigate(
+      isPC()
+        ? `/curriculum/${encodeURIComponent(c.id)}`
+        : `/curriculum/${encodeURIComponent(c.id)}/review`
+    );
   card.addEventListener("click", go);
   card.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") {

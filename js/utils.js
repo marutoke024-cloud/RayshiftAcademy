@@ -21,11 +21,40 @@ export function slugify(str) {
 }
 
 /**
+ * モバイル端末（スマホ / タブレット）かどうかを userAgent で判定。
+ * 仕様の「userAgent または画面幅で判定」に基づく。
+ *
+ * 重要: iPad Air 10.5 は横向きだと幅 1112px となり「画面幅 >= 1024」を満たして
+ * しまうため、幅だけだと PC 扱いになる。タブレットは常に復習専用にしたいので
+ * userAgent（および iPadOS の Mac 偽装）でも判定する。
+ */
+export function isMobileDevice() {
+  const ua = navigator.userAgent || "";
+  const uaMobile =
+    /Android|iPhone|iPad|iPod|Mobile|Tablet|Silk|Kindle|PlayBook|BlackBerry|Opera Mini|IEMobile/i.test(
+      ua
+    );
+  // iPadOS 13+ は userAgent が "Macintosh" になるため、タッチ点数で iPad を検出
+  const iPadOS =
+    /Mac/.test(ua) &&
+    typeof navigator.maxTouchPoints === "number" &&
+    navigator.maxTouchPoints > 1;
+  return uaMobile || iPadOS;
+}
+
+/**
  * デバイス判定。
  * 仕様: 画面幅 1024px 以上 = PC（全機能）、未満 = スマホ/iPad（復習のみ）。
+ * さらに、モバイル/タブレット端末は幅に関わらず復習専用（PC ではない）とする。
  */
 export function isPC() {
+  if (isMobileDevice()) return false;
   return window.innerWidth >= 1024;
+}
+
+/** body の data-device 用クラス */
+export function deviceClass() {
+  return isPC() ? "pc" : "mobile";
 }
 
 /** カリキュラムの進捗ステータス表示用ラベル */
