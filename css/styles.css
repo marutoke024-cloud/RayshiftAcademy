@@ -11,6 +11,9 @@
   --bg-2: #e9e5f6;
   --surface: #ffffff;
   --surface-2: #f6f3fc;
+  /* 半透明サーフェス（背景のマシュ壁紙が薄っすら透ける） */
+  --surface-glass: rgba(255, 255, 255, 0.74);
+  --surface-glass-2: rgba(255, 255, 255, 0.6);
 
   /* 線（淡い紫グレー） */
   --border: #e2dcf1;
@@ -78,7 +81,7 @@ a {
   max-width: 78vw;
   background: url("../assets/mash_bg.jpg") no-repeat right bottom;
   background-size: contain;
-  opacity: 0.15;
+  opacity: 0.22;
   z-index: 0;
   pointer-events: none;
 }
@@ -163,7 +166,9 @@ a {
 
 /* ---------- カード共通 ---------- */
 .card {
-  background: var(--surface);
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -339,7 +344,9 @@ a {
   display: flex;
   gap: 16px;
   align-items: center;
-  background: var(--surface);
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
@@ -612,7 +619,9 @@ a {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: var(--surface);
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 14px 16px;
