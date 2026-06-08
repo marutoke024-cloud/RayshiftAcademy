@@ -88,6 +88,17 @@ export const localBackend = {
     return await idb.getAll(STORES.ASSETS);
   },
 
+  // ---------- 汎用メタ（称号スナップショットなど） ----------
+  async saveMeta(key, value) {
+    await idb.put(STORES.META, { key, value });
+    return value;
+  },
+
+  async getMeta(key) {
+    const rec = await idb.get(STORES.META, key);
+    return rec ? rec.value : null;
+  },
+
   // ---------- 全消去（デバッグ用） ----------
   async clearAll() {
     await Promise.all([

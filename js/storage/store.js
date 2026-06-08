@@ -38,6 +38,10 @@ export const store = {
   getAsset: (...a) => backend.getAsset(...a),
   listAssets: (...a) => backend.listAssets(...a),
 
+  // メタ
+  saveMeta: (...a) => backend.saveMeta(...a),
+  getMeta: (...a) => backend.getMeta(...a),
+
   // デバッグ
   clearAll: (...a) => backend.clearAll(...a),
 };

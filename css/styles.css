@@ -826,6 +826,99 @@ textarea.field-input:focus {
   to { transform: translateY(-10px); }
 }
 
+/* =====================================================================
+   Phase 3: 復習モード / ミックス復習 / 称号
+   ===================================================================== */
+
+.detail-topbar-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.mastery-badge-img {
+  object-fit: cover;
+  display: block;
+}
+
+/* 復習ブロック */
+.review-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.review-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--primary-strong);
+}
+.review-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.review-explanation {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  padding: 4px 14px;
+}
+.review-explanation summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 10px 0;
+  color: var(--primary-strong);
+  user-select: none;
+}
+.review-explanation[open] summary {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.review-notes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+.review-subtitle {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: var(--text-dim);
+}
+.note-block.subtle {
+  color: var(--text-faint);
+  font-style: italic;
+}
+.growth-record {
+  background: var(--primary-soft);
+  border: 1px solid var(--primary-soft-2);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  color: var(--primary-darker);
+}
+.growth-record.subtle {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-faint);
+}
+
+/* ミックス復習 */
+.mix-page .recommend-area,
+.mix-page #mix-intro {
+  margin-bottom: 4px;
+}
+.mix-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.mix-actions .btn {
+  min-width: 200px;
+}
+
 /* ---------- トースト ---------- */
 #toast-host {
   position: fixed;

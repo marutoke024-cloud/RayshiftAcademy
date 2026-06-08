@@ -4,55 +4,59 @@
 // 仕様:
 //   - カリキュラム一覧（本棚形式）＋マスタリーバッジ
 //   - 称号・実績表示エリア
-//   - 今日のおすすめ（マシュピックアップ）
-//   - ミックス復習ボタン（Phase 3 で実装予定）
+//   - 今日のおすすめ（マシュピックアップ・ステップ単位）
+//   - ミックス復習ボタン
 //   - md インポート（PC のみ）
 // =====================================================================
 
-import { store } from "../storage/store.js";
 import { createImportPanel } from "../components/importPanel.js";
 import { createMashBubble, resetMashImageCache } from "../components/mash.js";
-import {
-  escapeHtml,
-  isPC,
-  masteryBadgeSVG,
-  statusLabel,
-  toast,
-} from "../utils.js";
+import { applyMasteryBadge, resetBadgeCache } from "../components/masteryBadge.js";
+import { escapeHtml, isPC, statusLabel } from "../utils.js";
 import { navigate } from "../app.js";
+import { getLibrary, allCompletedSteps } from "../services/library.js";
+import { pickTodaysStep } from "../services/recommend.js";
+import { computeTitles, persistTitles } from "../services/titles.js";
 
 export async function renderHome(root) {
   root.innerHTML = `<div class="home"></div>`;
   const home = root.querySelector(".home");
 
-  const curricula = await store.getCurricula();
+  const library = await getLibrary();
+  const curricula = library.map((x) => x.curriculum);
+  const completedStepCount = allCompletedSteps(library).length;
 
   // --- 今日のおすすめ ---
   const recommendArea = document.createElement("section");
   recommendArea.className = "recommend-area";
   home.appendChild(recommendArea);
-  renderRecommendation(recommendArea, curricula);
+  renderRecommendation(recommendArea, library);
 
   // --- アクションバー（ミックス復習など） ---
   const actions = document.createElement("section");
   actions.className = "home-actions";
   actions.innerHTML = `
     <button class="btn btn-primary" id="mix-review" ${
-      anyCompletedStep(curricula) ? "" : "disabled"
+      completedStepCount > 0 ? "" : "disabled"
     }>
       🔀 ミックス復習
     </button>
-    <span class="home-actions-note">複数カリキュラムからランダム出題（Phase 3）</span>
+    <span class="home-actions-note">${
+      completedStepCount > 0
+        ? `完了済み ${completedStepCount} ステップからランダム出題`
+        : "完了したステップが増えると利用できます"
+    }</span>
   `;
-  actions.querySelector("#mix-review").addEventListener("click", () => {
-    toast("ミックス復習は Phase 3 で実装予定です", "info");
-  });
+  actions
+    .querySelector("#mix-review")
+    .addEventListener("click", () => navigate("/mix-review"));
   home.appendChild(actions);
 
   // --- インポート（PC のみ） ---
   if (isPC()) {
     const panel = createImportPanel(() => {
       resetMashImageCache();
+      resetBadgeCache();
       renderHome(root); // 再描画
     });
     home.appendChild(panel);
@@ -67,7 +71,7 @@ export async function renderHome(root) {
   // --- 称号・実績エリア ---
   const titlesArea = document.createElement("section");
   titlesArea.className = "titles-area card";
-  renderTitles(titlesArea, curricula);
+  renderTitles(titlesArea, library);
   home.appendChild(titlesArea);
 
   // --- 本棚（カリキュラム一覧） ---
@@ -116,15 +120,15 @@ function curriculumCard(c) {
     .join("");
 
   card.innerHTML = `
-    <div class="card-badge">${masteryBadgeSVG(c.mastery || 0, 84)}</div>
+    <div class="card-badge"></div>
     <div class="card-body">
       <h3 class="card-title">${escapeHtml(c.title)}</h3>
       ${c.category ? `<div class="card-category">${escapeHtml(c.category)}</div>` : ""}
       <div class="card-meta">
-        <span class="status-pill status-${escapeHtml(rawStatus(c.status))}">${escapeHtml(
+        <span class="status-pill status-${rawStatus(c.status)}">${escapeHtml(
     statusLabel(c.status)
   )}</span>
-        <span class="card-steps">${c.total_steps || 0} ステップ</span>
+        <span class="card-steps">${total} ステップ</span>
         <span class="card-mode">${escapeHtml(c.mode || "standard")}</span>
       </div>
       <div class="card-tags">${tags}</div>
@@ -136,6 +140,9 @@ function curriculumCard(c) {
       }
     </div>
   `;
+
+  // マスタリーバッジ（画像があれば画像、無ければ SVG）
+  applyMasteryBadge(card.querySelector(".card-badge"), c.mastery || 0, 84);
 
   const go = () => navigate(`/curriculum/${encodeURIComponent(c.id)}`);
   card.addEventListener("click", go);
@@ -155,66 +162,67 @@ function rawStatus(status) {
 }
 
 // ---------------------------------------------------------------------
-// 今日のおすすめ
+// 今日のおすすめ（ステップ単位）
 // ---------------------------------------------------------------------
-async function renderRecommendation(area, curricula) {
-  const pick = pickRecommendation(curricula);
+async function renderRecommendation(area, library) {
+  const pick = pickTodaysStep(library);
   if (!pick) {
     const bubble = await createMashBubble(
-      "先輩、カリキュラムをインポートしたら、ここで今日のおすすめを紹介しますね！"
+      "先輩、カリキュラムをインポートして学習を始めたら、ここで今日のおすすめを紹介しますね！"
     );
     area.appendChild(wrapRecommend(bubble, null));
     return;
   }
-  const bubble = await createMashBubble(
-    `今日はこれどうですか、先輩！「${pick.title}」、一緒に進めましょう！`
-  );
-  area.appendChild(wrapRecommend(bubble, pick));
+
+  const { curriculum, step, reason } = pick;
+  const message =
+    reason === "next"
+      ? `今日はこれどうですか、先輩！「${curriculum.title}」の Step ${step.step}「${step.title}」、一緒に進めましょう！`
+      : `先輩、「${curriculum.title}」の Step ${step.step}「${step.title}」を復習しませんか？ 記憶を定着させましょう！`;
+
+  const bubble = await createMashBubble(message);
+  const action = {
+    label: reason === "next" ? "このステップを学ぶ" : "復習する",
+    href: `/curriculum/${encodeURIComponent(
+      curriculum.id
+    )}/step/${encodeURIComponent(step.id)}/learn`,
+  };
+  area.appendChild(wrapRecommend(bubble, action));
 }
 
-function wrapRecommend(bubbleEl, pick) {
+function wrapRecommend(bubbleEl, action) {
   const box = document.createElement("div");
   box.className = "recommend card";
   box.appendChild(bubbleEl);
-  if (pick) {
+  if (action) {
     const btn = document.createElement("button");
     btn.className = "btn btn-primary recommend-go";
-    btn.textContent = `「${pick.title}」を開く`;
-    btn.addEventListener("click", () =>
-      navigate(`/curriculum/${encodeURIComponent(pick.id)}`)
-    );
+    btn.textContent = action.label;
+    btn.addEventListener("click", () => navigate(action.href));
     box.appendChild(btn);
   }
   return box;
 }
 
-/** 優先: 未完了カリキュラム > mastery が低いカリキュラム */
-function pickRecommendation(curricula) {
-  if (!curricula.length) return null;
-  const incomplete = curricula.filter(
-    (c) => rawStatus(c.status) !== "completed"
-  );
-  const pool = incomplete.length ? incomplete : curricula;
-  return [...pool].sort((a, b) => (a.mastery || 0) - (b.mastery || 0))[0];
-}
-
 // ---------------------------------------------------------------------
 // 称号・実績
 // ---------------------------------------------------------------------
-function renderTitles(area, curricula) {
-  const completed = curricula.filter(
-    (c) => rawStatus(c.status) === "completed"
-  );
+function renderTitles(area, library) {
+  const titles = computeTitles(library);
+  persistTitles(titles); // Firebase 有効時の記録用（ローカルでも META に保存）
+
   const badges = [];
-  for (const c of completed) {
-    if (c.shougou) {
-      badges.push(`<span class="title-badge">🏅 ${escapeHtml(firstLine(c.shougou))}</span>`);
-    } else {
-      badges.push(`<span class="title-badge">🏅 ${escapeHtml(c.title)} マスター</span>`);
-    }
+  for (const t of titles.overall) {
+    badges.push(
+      `<span class="title-badge title-badge-gold">${t.emoji} ${escapeHtml(
+        t.label
+      )}</span>`
+    );
   }
-  if (completed.length >= 3) {
-    badges.unshift(`<span class="title-badge title-badge-gold">👑 三冠達成</span>`);
+  for (const t of titles.individual) {
+    badges.push(
+      `<span class="title-badge">${t.emoji} ${escapeHtml(t.label)}</span>`
+    );
   }
 
   area.innerHTML = `
@@ -227,13 +235,4 @@ function renderTitles(area, curricula) {
       }
     </div>
   `;
-}
-
-function firstLine(text) {
-  return String(text || "").split(/\r?\n/)[0].replace(/^#+\s*/, "").trim();
-}
-
-function anyCompletedStep(curricula) {
-  // Phase 1 では step 状態を集計しないため、完了カリキュラムがあれば有効化
-  return curricula.some((c) => rawStatus(c.status) === "completed");
 }

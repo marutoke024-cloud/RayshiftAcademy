@@ -8,9 +8,10 @@
 // =====================================================================
 
 import { store } from "../storage/store.js";
-import { escapeHtml, masteryBadgeSVG, statusLabel, toast } from "../utils.js";
+import { escapeHtml, statusLabel, toast } from "../utils.js";
 import { navigate } from "../app.js";
 import { renderMarkdown } from "../lib/markdown.js";
+import { applyMasteryBadge } from "../components/masteryBadge.js";
 
 export async function renderCurriculumDetail(root, curriculumId) {
   const c = await store.getCurriculum(curriculumId);
@@ -26,16 +27,27 @@ export async function renderCurriculumDetail(root, curriculumId) {
 
   const steps = await store.getSteps(curriculumId);
   const completedCount = steps.filter((s) => s.status === "completed").length;
+  const total = c.total_steps || steps.length;
+  const isCompleted =
+    c.status === "完了" || c.status === "completed" ||
+    (total > 0 && completedCount >= total);
 
   root.innerHTML = `
     <div class="detail">
       <div class="detail-topbar">
         <button class="btn btn-ghost" id="back">← トップへ</button>
-        <button class="btn btn-danger-ghost" id="delete">このカリキュラムを削除</button>
+        <div class="detail-topbar-right">
+          ${
+            isCompleted
+              ? `<button class="btn btn-primary" id="review">📖 復習モード</button>`
+              : ""
+          }
+          <button class="btn btn-danger-ghost" id="delete">削除</button>
+        </div>
       </div>
 
       <header class="detail-header card">
-        <div class="detail-badge">${masteryBadgeSVG(c.mastery || 0, 96)}</div>
+        <div class="detail-badge"></div>
         <div class="detail-headinfo">
           <h1 class="detail-title">${escapeHtml(c.title)}</h1>
           <div class="detail-meta">
@@ -71,7 +83,15 @@ export async function renderCurriculumDetail(root, curriculumId) {
     </div>
   `;
 
+  applyMasteryBadge(root.querySelector(".detail-badge"), c.mastery || 0, 96);
+
   root.querySelector("#back").addEventListener("click", () => navigate("/"));
+  const reviewBtn = root.querySelector("#review");
+  if (reviewBtn) {
+    reviewBtn.addEventListener("click", () =>
+      navigate(`/curriculum/${encodeURIComponent(curriculumId)}/review`)
+    );
+  }
   root.querySelector("#delete").addEventListener("click", async () => {
     if (
       confirm(`「${c.title}」を削除します。よろしいですか？（進捗も消えます）`)

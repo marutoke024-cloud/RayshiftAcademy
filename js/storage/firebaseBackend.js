@@ -58,6 +58,12 @@ export const firebaseBackend = {
   async listAssets() {
     notImplemented();
   },
+  async saveMeta() {
+    notImplemented();
+  },
+  async getMeta() {
+    notImplemented();
+  },
   async clearAll() {
     notImplemented();
   },

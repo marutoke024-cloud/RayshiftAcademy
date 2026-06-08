@@ -13,6 +13,8 @@ import { renderCurriculumDetail } from "./views/detail.js";
 import { renderLearn } from "./views/learn.js";
 import { renderRecall } from "./views/recall.js";
 import { renderFeedback } from "./views/feedback.js";
+import { renderReview } from "./views/review.js";
+import { renderMixReview } from "./views/mixReview.js";
 
 const appRoot = () => document.getElementById("app");
 
@@ -40,8 +42,16 @@ async function route() {
   try {
     if (parts.length === 0) {
       await renderHome(root);
+    } else if (parts[0] === "mix-review") {
+      await renderMixReview(root);
     } else if (parts[0] === "curriculum" && parts[1]) {
       const curriculumId = decodeURIComponent(parts[1]);
+      // #/curriculum/:id/review
+      if (parts[2] === "review") {
+        await renderReview(root, curriculumId);
+        window.scrollTo({ top: 0 });
+        return;
+      }
       // #/curriculum/:id/step/:stepId/(learn|recall|feedback)
       if (parts[2] === "step" && parts[3]) {
         const stepId = decodeURIComponent(parts[3]);
