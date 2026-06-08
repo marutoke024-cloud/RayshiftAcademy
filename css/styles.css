@@ -11,9 +11,9 @@
   --bg-2: #e9e5f6;
   --surface: #ffffff;
   --surface-2: #f6f3fc;
-  /* 半透明サーフェス（背景のマシュ壁紙が薄っすら透ける） */
-  --surface-glass: rgba(255, 255, 255, 0.74);
-  --surface-glass-2: rgba(255, 255, 255, 0.6);
+  /* 半透明サーフェス（背景のマシュ壁紙が透ける） */
+  --surface-glass: rgba(255, 255, 255, 0.45);
+  --surface-glass-2: rgba(255, 255, 255, 0.35);
 
   /* 線（淡い紫グレー） */
   --border: #e2dcf1;
@@ -81,7 +81,7 @@ a {
   max-width: 78vw;
   background: url("../assets/mash_bg.jpg") no-repeat right bottom;
   background-size: contain;
-  opacity: 0.22;
+  opacity: 0.32;
   z-index: 0;
   pointer-events: none;
 }
@@ -574,7 +574,6 @@ a {
   margin-top: 1.4em;
 }
 .md-body h2 {
-  border-bottom: 1px solid var(--border);
   padding-bottom: 0.25em;
 }
 .md-body code {
