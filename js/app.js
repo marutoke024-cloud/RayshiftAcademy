@@ -10,6 +10,9 @@ import { store } from "./storage/store.js";
 import { isPC, toast } from "./utils.js";
 import { renderHome } from "./views/home.js";
 import { renderCurriculumDetail } from "./views/detail.js";
+import { renderLearn } from "./views/learn.js";
+import { renderRecall } from "./views/recall.js";
+import { renderFeedback } from "./views/feedback.js";
 
 const appRoot = () => document.getElementById("app");
 
@@ -38,7 +41,21 @@ async function route() {
     if (parts.length === 0) {
       await renderHome(root);
     } else if (parts[0] === "curriculum" && parts[1]) {
-      await renderCurriculumDetail(root, decodeURIComponent(parts[1]));
+      const curriculumId = decodeURIComponent(parts[1]);
+      // #/curriculum/:id/step/:stepId/(learn|recall|feedback)
+      if (parts[2] === "step" && parts[3]) {
+        const stepId = decodeURIComponent(parts[3]);
+        const mode = parts[4] || "learn";
+        if (mode === "recall") {
+          await renderRecall(root, curriculumId, stepId);
+        } else if (mode === "feedback") {
+          await renderFeedback(root, curriculumId, stepId);
+        } else {
+          await renderLearn(root, curriculumId, stepId);
+        }
+      } else {
+        await renderCurriculumDetail(root, curriculumId);
+      }
     } else {
       // 未知のルートはトップへ
       await renderHome(root);

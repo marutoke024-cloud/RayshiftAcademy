@@ -64,6 +64,8 @@ try {
     $context = $listener.GetContext()
     $req = $context.Request
     $res = $context.Response
+    # 単一スレッド配信のため keep-alive を無効化（接続の取りこぼし防止）
+    $res.KeepAlive = $false
     try {
       # URL パス → ローカルファイルパス
       $relative = [System.Uri]::UnescapeDataString($req.Url.AbsolutePath)

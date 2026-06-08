@@ -69,13 +69,13 @@ export function masteryBadgeSVG(mastery, size = 88) {
   <svg class="mastery-badge-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"
        role="img" aria-label="マスタリー ${m} / 5">
     <defs>
-      <radialGradient id="mbg" cx="50%" cy="40%" r="65%">
-        <stop offset="0%" stop-color="#3a2d5e"/>
-        <stop offset="100%" stop-color="#221a3a"/>
+      <radialGradient id="mbg" cx="50%" cy="38%" r="68%">
+        <stop offset="0%" stop-color="#6e72d6"/>
+        <stop offset="100%" stop-color="#4f52b2"/>
       </radialGradient>
     </defs>
     <circle cx="${cx}" cy="${cy}" r="${size * 0.46}" fill="url(#mbg)"
-            stroke="#8a7bd8" stroke-width="2"/>
+            stroke="#dcdffa" stroke-width="2"/>
     ${stars}
     <text x="${cx}" y="${cy + size * 0.07}" text-anchor="middle"
           font-size="${size * 0.26}" font-weight="700"
@@ -93,8 +93,8 @@ function starPath(cx, cy, radius, on) {
       cy + Math.sin(inner) * (radius * 0.45)
     } `;
   }
-  const fill = on ? "#ffd45e" : "#4b4170";
-  const stroke = on ? "#ffb52e" : "#3a3158";
+  const fill = on ? "#ffd45e" : "#b9bbe6";
+  const stroke = on ? "#ffb52e" : "#9a9ddb";
   return `<polygon points="${points.trim()}" fill="${fill}" stroke="${stroke}" stroke-width="0.8"/>`;
 }
 

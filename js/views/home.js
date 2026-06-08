@@ -108,7 +108,9 @@ function curriculumCard(c) {
   card.tabIndex = 0;
   card.setAttribute("role", "button");
 
-  const completedSteps = 0; // Phase 2 で step 状態から算出
+  const total = c.total_steps || 0;
+  const completedSteps = c.completedSteps || 0;
+  const pct = total ? Math.round((completedSteps / total) * 100) : 0;
   const tags = (c.tags || [])
     .map((t) => `<span class="tag">#${escapeHtml(t)}</span>`)
     .join("");
@@ -126,6 +128,12 @@ function curriculumCard(c) {
         <span class="card-mode">${escapeHtml(c.mode || "standard")}</span>
       </div>
       <div class="card-tags">${tags}</div>
+      ${
+        total
+          ? `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+             <div class="progress-label">${completedSteps} / ${total} 完了</div>`
+          : ""
+      }
     </div>
   `;
 

@@ -1,10 +1,10 @@
 // =====================================================================
-// カリキュラム詳細画面（Phase 1: ステップ一覧の表示まで）
+// カリキュラム詳細画面
 // ---------------------------------------------------------------------
 // 仕様:
 //   - ステップ一覧（完了=解錠アイコン / 未完了=鍵アイコン）
-//   - 各ステップへのリンク
-// 学習フロー本体（解説/リコール/フィードバック）は Phase 2 で実装します。
+//   - 各ステップへのリンク（解錠済みは学習フローへ遷移）
+//   - 進捗バー
 // =====================================================================
 
 import { store } from "../storage/store.js";
@@ -25,6 +25,7 @@ export async function renderCurriculumDetail(root, curriculumId) {
   }
 
   const steps = await store.getSteps(curriculumId);
+  const completedCount = steps.filter((s) => s.status === "completed").length;
 
   root.innerHTML = `
     <div class="detail">
@@ -41,7 +42,9 @@ export async function renderCurriculumDetail(root, curriculumId) {
             ${c.category ? `<span class="chip">${escapeHtml(c.category)}</span>` : ""}
             <span class="chip">${escapeHtml(c.mode || "standard")}</span>
             <span class="chip">${c.total_steps || steps.length} ステップ</span>
-            <span class="status-pill">${escapeHtml(statusLabel(c.status))}</span>
+            <span class="status-pill status-${rawStatus(c.status)}">${escapeHtml(
+    statusLabel(c.status)
+  )}</span>
           </div>
           ${
             (c.tags || []).length
@@ -50,6 +53,7 @@ export async function renderCurriculumDetail(root, curriculumId) {
                   .join("")}</div>`
               : ""
           }
+          ${progressBar(completedCount, c.total_steps || steps.length)}
         </div>
       </header>
 
@@ -64,8 +68,6 @@ export async function renderCurriculumDetail(root, curriculumId) {
 
       <h2 class="section-title">ステップ一覧</h2>
       <ol class="step-list" id="step-list"></ol>
-
-      <p class="phase-note">※ 学習フロー（解説・リコール・フィードバック）は Phase 2 で実装予定です。</p>
     </div>
   `;
 
@@ -110,9 +112,28 @@ function stepRow(curriculumId, s) {
   if (!locked) {
     li.classList.add("clickable");
     li.addEventListener("click", () => {
-      // Phase 2 で学習ページへ遷移予定
-      toast("学習ページは Phase 2 で実装予定です", "info");
+      navigate(
+        `/curriculum/${encodeURIComponent(curriculumId)}/step/${encodeURIComponent(
+          s.id
+        )}/learn`
+      );
     });
   }
   return li;
+}
+
+function rawStatus(status) {
+  if (status === "完了" || status === "completed") return "completed";
+  if (status === "進行中" || status === "in_progress") return "in_progress";
+  return "not_started";
+}
+
+function progressBar(completed, total) {
+  if (!total) return "";
+  const pct = Math.round((completed / total) * 100);
+  return `
+    <div class="progress-bar" style="max-width:320px">
+      <div class="progress-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="progress-label">${completed} / ${total} ステップ完了</div>`;
 }
