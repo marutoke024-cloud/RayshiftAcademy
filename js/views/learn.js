@@ -1,11 +1,12 @@
 // =====================================================================
-// 解説ページ（Phase 2）
+// 解説ページ（カリキュラム・ステップ）
 // ---------------------------------------------------------------------
 // 仕様:
-//   - ステップタイトル・概要
-//   - 解説コンテンツ（md 描画: なぜ必要か / なぜそう設計されているか / 何で
-//     あるか / どう動くか / どう使うか / 任意ブロック）
-//   - 一口メモ（マシュ SD イラスト＋吹き出し）
+//   - ヘッダー＋ステップタイトル＋ナビをスクロール追従（sticky）
+//   - 解説コンテンツ（md 描画・句点で改行・セクションごとに区切り線）
+//   - 各セクション末尾の <!-- mash_comment: ... --> をパースして
+//     区切り線の直上に「マシュのひとことコメント」を表示
+//   - 一口メモ（マシュ吹き出し・引用記法/区切り線は除去）
 //   - 「リコールページへ」ボタン
 // =====================================================================
 
@@ -13,7 +14,14 @@ import { store } from "../storage/store.js";
 import { navigate } from "../app.js";
 import { escapeHtml, toast } from "../utils.js";
 import { renderMarkdown } from "../lib/markdown.js";
-import { getSectionBody, removeSection } from "../lib/stepDoc.js";
+import {
+  splitSections,
+  removeSection,
+  getSectionBody,
+  breakAfterPeriods,
+  extractMashComment,
+  cleanMemoText,
+} from "../lib/stepDoc.js";
 import { createMashBubble } from "../components/mash.js";
 
 const MEMO_HEADING = "一口メモ";
@@ -29,38 +37,54 @@ export async function renderLearn(root, curriculumId, stepId) {
     return navigate(`/curriculum/${encodeURIComponent(curriculumId)}`);
   }
 
+  // 前ステップ（固定ナビの「前のステップ」用）
+  const steps = await store.getSteps(curriculumId);
+  const idx = steps.findIndex((s) => s.id === stepId);
+  const prev = idx > 0 ? steps[idx - 1] : null;
+
   // 一口メモは別枠（マシュ吹き出し）で表示するため本文から除外
-  const memoText = getSectionBody(step.content, MEMO_HEADING);
+  const memoText = cleanMemoText(getSectionBody(step.content, MEMO_HEADING));
   const bodyMd = removeSection(step.content, MEMO_HEADING);
 
   root.innerHTML = `
     <div class="flow-page learn-page">
-      <div class="flow-topbar">
-        <button class="btn btn-ghost" id="back">← カリキュラムへ</button>
-        <div class="flow-steps">
-          <span class="fs active">① 解説</span>
-          <span class="fs">② リコール</span>
-          <span class="fs">③ フィードバック</span>
+      <div class="learn-sticky">
+        <div class="flow-topbar">
+          <div class="nav-group">
+            <button class="btn btn-ghost btn-sm" id="to-home">🏠 トップ</button>
+            <button class="btn btn-ghost btn-sm" id="back">≡ カリキュラム</button>
+            ${
+              prev
+                ? `<button class="btn btn-ghost btn-sm" id="to-prev">◁ 前のステップ</button>`
+                : ""
+            }
+          </div>
+          <div class="flow-steps">
+            <span class="fs active">① 解説</span>
+            <span class="fs">② リコール</span>
+            <span class="fs">③ フィードバック</span>
+          </div>
+        </div>
+        <div class="learn-stickytitle">
+          <div class="flow-breadcrumb"><b>${escapeHtml(curriculum.title)}</b></div>
+          <h1 class="flow-steptitle">Step ${escapeHtml(step.step)}: ${escapeHtml(
+    step.title
+  )}</h1>
+          <div class="flow-stepmeta">
+            ${
+              step.key_concept
+                ? `<span class="step-key">🔑 ${escapeHtml(step.key_concept)}</span>`
+                : ""
+            }
+            <span class="chip">${escapeHtml(
+              step.mode || curriculum.mode || "standard"
+            )}</span>
+          </div>
         </div>
       </div>
 
-      <header class="card">
-        <div class="flow-breadcrumb"><b>${escapeHtml(curriculum.title)}</b></div>
-        <h1 class="flow-steptitle">Step ${escapeHtml(step.step)}: ${escapeHtml(
-    step.title
-  )}</h1>
-        <div class="flow-stepmeta">
-          ${
-            step.key_concept
-              ? `<span class="step-key">🔑 ${escapeHtml(step.key_concept)}</span>`
-              : ""
-          }
-          <span class="chip">${escapeHtml(step.mode || curriculum.mode || "standard")}</span>
-        </div>
-      </header>
-
-      <section class="card">
-        <div class="md-body learn-content">${renderMarkdown(bodyMd)}</div>
+      <section class="card learn-card">
+        <div class="learn-content">${buildSectionsHTML(bodyMd)}</div>
       </section>
 
       <section class="card" id="memo-area"></section>
@@ -84,11 +108,26 @@ export async function renderLearn(root, curriculumId, stepId) {
   memoArea.appendChild(label);
   memoArea.appendChild(bubble);
 
+  // ナビゲーション
+  root
+    .querySelector("#to-home")
+    .addEventListener("click", () => navigate("/"));
   root
     .querySelector("#back")
     .addEventListener("click", () =>
       navigate(`/curriculum/${encodeURIComponent(curriculumId)}`)
     );
+  if (prev) {
+    root
+      .querySelector("#to-prev")
+      .addEventListener("click", () =>
+        navigate(
+          `/curriculum/${encodeURIComponent(
+            curriculumId
+          )}/step/${encodeURIComponent(prev.id)}/learn`
+        )
+      );
+  }
   root.querySelector("#to-recall").addEventListener("click", () =>
     navigate(
       `/curriculum/${encodeURIComponent(curriculumId)}/step/${encodeURIComponent(
@@ -96,6 +135,39 @@ export async function renderLearn(root, curriculumId, stepId) {
       )}/recall`
     )
   );
+}
+
+// ---------------------------------------------------------------------
+// セクションごとに描画（句点改行 + マシュコメント + 区切り線）
+// ---------------------------------------------------------------------
+function buildSectionsHTML(bodyMd) {
+  const { preamble, sections } = splitSections(bodyMd);
+  let html = "";
+
+  if (preamble) {
+    html += `<div class="md-body">${renderMarkdown(
+      breakAfterPeriods(preamble)
+    )}</div>`;
+  }
+
+  for (const section of sections) {
+    const { comment, body } = extractMashComment(section.body);
+    const sectionMd = `## ${section.heading}\n\n${breakAfterPeriods(body)}`;
+    html += `<div class="learn-section">
+      <div class="md-body">${renderMarkdown(sectionMd)}</div>
+      ${comment ? mashCommentHTML(comment) : ""}
+      <hr class="section-divider" />
+    </div>`;
+  }
+  return html;
+}
+
+function mashCommentHTML(text) {
+  return `<div class="mash-comment">
+    <img class="mash-comment-icon" src="./assets/mash_icon.png" alt="マシュ"
+      onerror="this.onerror=null;this.src='./assets/mash_bg.jpg';this.classList.add('is-fallback')" />
+    <div class="mash-comment-text">${escapeHtml(text)}</div>
+  </div>`;
 }
 
 function notFound(root, curriculumId) {

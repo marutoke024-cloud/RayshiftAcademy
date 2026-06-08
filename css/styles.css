@@ -6,38 +6,46 @@
    ===================================================================== */
 
 :root {
-  /* 背景・サーフェス */
-  --bg: #f5f5f5;
-  --bg-2: #eef0f6;
+  /* 背景・サーフェス（ほんのり藤色を含むライト） */
+  --bg: #f3f1fa;
+  --bg-2: #e9e5f6;
   --surface: #ffffff;
-  --surface-2: #f5f6fb;
+  --surface-2: #f6f3fc;
 
-  /* 線 */
-  --border: #e1e1e6;
-  --border-strong: #d1d1d6;
+  /* 線（淡い紫グレー） */
+  --border: #e2dcf1;
+  --border-strong: #cbbfe8;
 
-  /* Teams ブランドパープル */
-  --primary: #5b5fc7;
-  --primary-strong: #4f52b2;
-  --primary-darker: #444791;
-  --primary-soft: #e8ebfa;
-  --primary-soft-2: #dcdffa;
+  /* マシュ パープル（Teams の落ち着き × マシュの紫） */
+  --primary: #6b4fa0;
+  --primary-strong: #58407f;
+  --primary-darker: #45316a;
+  --primary-light: #8b6bc1;
+  --primary-soft: #ede7f7;
+  --primary-soft-2: #ddd0f0;
 
-  /* アクセント・状態色（Fluent 準拠） */
-  --accent: #c19c00; /* バッジの星など */
-  --text: #242424;
-  --text-dim: #616161;
-  --text-faint: #8a8a8a;
+  /* ヘッダーグラデーション */
+  --header-grad-a: #6b4fa0;
+  --header-grad-b: #8b6bc1;
+
+  /* アクセント・状態色 */
+  --accent: #c79a2e; /* バッジの星など */
+  --text: #2a2440;
+  --text-dim: #6b6385;
+  --text-faint: #9a93b3;
   --danger: #c4314b;
   --success: #0f7b3f;
   --warn: #9a6700;
 
   --radius: 8px;
   --radius-sm: 6px;
-  --shadow: 0 1.6px 3.6px rgba(0, 0, 0, 0.1), 0 0.3px 0.9px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 6.4px 14.4px rgba(0, 0, 0, 0.12), 0 1.2px 3.6px rgba(0, 0, 0, 0.08);
+  --shadow: 0 1.6px 3.6px rgba(60, 40, 100, 0.1),
+    0 0.3px 0.9px rgba(60, 40, 100, 0.08);
+  --shadow-lg: 0 6.4px 14.4px rgba(60, 40, 100, 0.16),
+    0 1.2px 3.6px rgba(60, 40, 100, 0.1);
   --gap: 18px;
   --pad-x: clamp(12px, 2.2vw, 28px);
+  --header-h: 64px;
   font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic UI",
     system-ui, sans-serif;
 }
@@ -60,42 +68,78 @@ a {
   text-decoration: none;
 }
 
+/* ---------- 背景のマシュ（全ページ共通・固定・最背面） ---------- */
+.app-bg {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  height: 66vh;
+  width: 48vw;
+  max-width: 560px;
+  background: url("../assets/mash_bg.jpg") no-repeat right bottom;
+  background-size: contain;
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
+}
+/* コンテンツは背景より前面に */
+.app-header,
+.app-main,
+.app-footer {
+  position: relative;
+  z-index: 1;
+}
+
 /* ---------- ヘッダー ---------- */
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--gap);
-  padding: 12px var(--pad-x);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  padding: 10px var(--pad-x);
+  min-height: var(--header-h);
+  background: linear-gradient(120deg, var(--header-grad-a), var(--header-grad-b));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   position: sticky;
   top: 0;
   z-index: 50;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 12px rgba(60, 40, 100, 0.28);
 }
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--text);
+  gap: 12px;
+  color: #fff;
   font-weight: 700;
-  font-size: 1.25rem;
+}
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 18%; /* マシュの顔が見えるように上寄せ */
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  background: #fff;
 }
 .brand-mark {
   font-size: 1.4rem;
-  color: var(--primary);
 }
 .brand-name {
-  color: var(--primary);
+  font-family: "Cinzel", "Raleway", serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 .device-pill {
   font-size: 0.8rem;
-  color: var(--text-dim);
-  border: 1px solid var(--border);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 999px;
   padding: 4px 12px;
-  background: var(--surface-2);
+  background: rgba(255, 255, 255, 0.16);
 }
 
 /* ---------- レイアウト ---------- */
@@ -220,6 +264,9 @@ a {
   background: var(--surface-2);
   border: 2px solid var(--primary-soft-2);
   flex-shrink: 0;
+}
+.mash-avatar.is-fallback {
+  object-position: 50% 12%; /* 全身イラスト→顔が見えるよう上寄せ */
 }
 .mash-placeholder {
   display: flex;
@@ -685,6 +732,100 @@ a {
   flex-wrap: wrap;
 }
 
+/* 固定（sticky）ヘッダー: ナビ＋ステップタイトル */
+.learn-sticky {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+  margin-bottom: 4px;
+}
+.learn-sticky .flow-topbar {
+  margin-bottom: 8px;
+}
+.nav-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+}
+.learn-stickytitle .flow-breadcrumb {
+  margin-bottom: 2px;
+}
+.learn-stickytitle .flow-steptitle {
+  font-size: 1.3rem;
+  margin: 0;
+}
+.learn-stickytitle .flow-stepmeta {
+  margin-top: 6px;
+}
+
+/* セクション区切りと、その直上のマシュコメント */
+.learn-section {
+  margin-bottom: 4px;
+}
+.section-divider {
+  border: none;
+  border-top: 2px dashed var(--primary-soft-2);
+  margin: 18px 0 22px;
+}
+.learn-section:last-child .section-divider {
+  display: none;
+}
+
+/* マシュのひとことコメント（吹き出し） */
+.mash-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+.mash-comment-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--primary-soft-2);
+  background: var(--surface-2);
+}
+.mash-comment-icon.is-fallback {
+  object-position: 50% 14%; /* イラスト全身→顔が見えるよう上寄せ */
+}
+.mash-comment-text {
+  position: relative;
+  background: var(--primary-soft);
+  border: 1px solid var(--primary-soft-2);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--primary-darker);
+  max-width: 720px;
+}
+.mash-comment-text::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 14px;
+  width: 12px;
+  height: 12px;
+  background: var(--primary-soft);
+  border-left: 1px solid var(--primary-soft-2);
+  border-bottom: 1px solid var(--primary-soft-2);
+  transform: rotate(45deg);
+}
+
 /* リコールページ */
 .recall-question {
   border-left: 4px solid var(--primary);
@@ -1003,10 +1144,11 @@ textarea.field-input:focus {
    Phase 4: モバイル最適化（Galaxy S25 / iPad Air など）
    ===================================================================== */
 
-/* 画面外へのはみ出し防止 & 画像の縮小 */
-html,
+/* 画面外へのはみ出し防止 & 画像の縮小
+   注: overflow-x:hidden は position:sticky を壊すため clip を使用
+   （clip はスクロールコンテナを生成しないので sticky が効く） */
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 .md-body img,
 .mash-avatar,

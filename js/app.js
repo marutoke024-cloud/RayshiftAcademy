@@ -94,8 +94,9 @@ function setupHeader() {
   if (!header) return;
   header.innerHTML = `
     <a class="brand" href="#/">
-      <span class="brand-mark">✨</span>
-      <span class="brand-name">Rayshift Academy</span>
+      <img class="brand-logo" src="./assets/mash_bg.jpg" alt="Rayshift Academy"
+        onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'brand-mark',textContent:'✨'}))" />
+      <span class="brand-name">Rayshift&nbsp;Academy</span>
     </a>
     <div class="header-right">
       <span class="device-pill">${isPC() ? "PC モード" : "復習モード（モバイル）"}</span>

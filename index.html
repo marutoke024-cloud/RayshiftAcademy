@@ -5,15 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rayshift Academy</title>
     <meta name="description" content="Obsidian カリキュラムで学ぶ個人向け e-learning アプリ" />
+
+    <!-- アプリアイコン / favicon（マシュ） -->
+    <link rel="icon" type="image/jpeg" href="./assets/mash_bg.jpg" />
+    <link rel="apple-touch-icon" href="./assets/mash_bg.jpg" />
+
+    <!-- Google Fonts: ロゴ用（Cinzel）＋本文補助（Raleway） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Raleway:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="./css/styles.css" />
     <!-- md パーサー: marked.js（CDN） -->
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
   </head>
   <body>
+    <!-- 背景のマシュ（全ページ共通・固定・最背面） -->
+    <div class="app-bg" aria-hidden="true"></div>
+
     <header id="app-header" class="app-header"></header>
     <main id="app" class="app-main"></main>
     <footer class="app-footer">
-      <span>Rayshift Academy — 個人学習用 / Phase 1</span>
+      <span>Rayshift Academy — 個人学習用</span>
     </footer>
 
     <!-- アプリ本体（ES Modules） -->

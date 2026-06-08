@@ -1,16 +1,20 @@
 // =====================================================================
 // マシュ吹き出し（一口メモ / おすすめ など共通 UI）
 // ---------------------------------------------------------------------
-// assets/mash_sd.png があれば表示、無ければプレースホルダー。
+// 優先順: インポートされた mash_sd.png > 同梱の ./assets/mash_bg.jpg。
 // =====================================================================
 
 import { store } from "../storage/store.js";
 import { escapeHtml } from "../utils.js";
 
+// 同梱の静的画像（インポート画像が無いときのフォールバック）
+const STATIC_MASH = "./assets/mash_bg.jpg";
+
 let cachedMashUrl;
 
 async function getMashImageURL() {
   if (cachedMashUrl !== undefined) return cachedMashUrl;
+  // インポートされた SD イラストがあれば優先、無ければ同梱画像
   cachedMashUrl = (await store.getAsset("mash_sd.png")) || null;
   return cachedMashUrl;
 }
@@ -30,11 +34,14 @@ export async function createMashBubble(text, opts = {}) {
   const el = document.createElement("div");
   el.className = "mash-bubble";
 
-  const url = await getMashImageURL();
-  const avatar = url
-    ? `<img class="mash-avatar" src="${url}" alt="マシュ" width="${size}" height="${size}" />`
-    : `<div class="mash-avatar mash-placeholder" style="width:${size}px;height:${size}px"
-          title="assets/mash_sd.png をインポートすると表示されます">マシュ</div>`;
+  const uploaded = await getMashImageURL();
+  const src = uploaded || STATIC_MASH;
+  // 同梱の全身イラストは顔が見えるよう上寄せ（is-fallback）
+  const fallbackClass = uploaded ? "" : " is-fallback";
+  // 画像が読めなければプレースホルダーに差し替え
+  const avatar = `<img class="mash-avatar${fallbackClass}" src="${src}" alt="マシュ"
+      width="${size}" height="${size}"
+      onerror="this.onerror=null;this.outerHTML='<div class=&quot;mash-avatar mash-placeholder&quot; style=&quot;width:${size}px;height:${size}px&quot;>マシュ</div>'" />`;
 
   el.innerHTML = `
     ${avatar}

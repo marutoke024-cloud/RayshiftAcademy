@@ -121,6 +121,46 @@ export function composeNote(generalText, keyConceptText, keyConcept) {
   return blocks.join("\n\n");
 }
 
+/**
+ * 句点「。」の後に改行を挿入して読みやすくする。
+ * コードフェンス（```）内は対象外。閉じ括弧・改行が続く場合は挿入しない。
+ */
+export function breakAfterPeriods(md) {
+  const parts = (md || "").split(/(```[\s\S]*?```)/g);
+  return parts
+    .map((p, i) => {
+      if (i % 2 === 1) return p; // フェンスコードはそのまま
+      return p.replace(/。(?![」』）)\]\n])/g, "。\n");
+    })
+    .join("");
+}
+
+/**
+ * セクション本文から「マシュのひとことコメント」を抽出する。
+ * md 内の <!-- mash_comment: コメント文 --> 形式をパース。
+ * @returns {{comment: string, body: string}} comment は無ければ ""
+ */
+export function extractMashComment(text) {
+  const re = /<!--\s*mash_comment:\s*([\s\S]*?)-->/i;
+  const m = (text || "").match(re);
+  const comment = m ? m[1].trim() : "";
+  const body = (text || "").replace(/<!--\s*mash_comment:[\s\S]*?-->/gi, "").trim();
+  return { comment, body };
+}
+
+/**
+ * 一口メモ用テキストの整形。
+ * md のブロック引用記法（行頭の "> "）と区切り線（---, ***, ___）を除去する。
+ */
+export function cleanMemoText(text) {
+  return (text || "")
+    .split(/\r?\n/)
+    .filter((line) => !/^\s*([-*_])\1{2,}\s*$/.test(line))
+    .map((line) => line.replace(/^\s*>\s?/, ""))
+    .join("\n")
+    .trim();
+}
+
 /** ブラウザでファイルとしてダウンロードさせる */
 export function downloadText(filename, text) {
   const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
