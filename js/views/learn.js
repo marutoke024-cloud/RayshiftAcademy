@@ -15,11 +15,9 @@ import { navigate } from "../app.js";
 import { escapeHtml, toast } from "../utils.js";
 import { renderMarkdown } from "../lib/markdown.js";
 import {
-  splitSections,
   removeSection,
   getSectionBody,
   breakAfterPeriods,
-  extractMashComment,
   cleanMemoText,
 } from "../lib/stepDoc.js";
 import { createMashBubble } from "../components/mash.js";
@@ -141,24 +139,31 @@ export async function renderLearn(root, curriculumId, stepId) {
 // セクションごとに描画（句点改行 + マシュコメント + 区切り線）
 // ---------------------------------------------------------------------
 function buildSectionsHTML(bodyMd) {
-  const { preamble, sections } = splitSections(bodyMd);
+  // mash_comment マーカー単位で本文を区切る。
+  // → 見出しレベル（##/###）に関係なく、コメントが書かれた各セグメントの
+  //   「文章の下・実線の上」にコメントを表示できる。
+  const re = /<!--\s*mash_comment:\s*([\s\S]*?)-->/gi;
   let html = "";
+  let last = 0;
+  let m;
 
-  if (preamble) {
-    html += `<div class="md-body">${renderMarkdown(
-      breakAfterPeriods(preamble)
-    )}</div>`;
-  }
+  const renderChunk = (md) => {
+    if (md && md.trim()) {
+      html += `<div class="md-body">${renderMarkdown(breakAfterPeriods(md))}</div>`;
+    }
+  };
 
-  for (const section of sections) {
-    const { comment, body } = extractMashComment(section.body);
-    const sectionMd = `## ${section.heading}\n\n${breakAfterPeriods(body)}`;
-    html += `<div class="learn-section">
-      <div class="md-body">${renderMarkdown(sectionMd)}</div>
-      ${comment ? mashCommentHTML(comment) : ""}
-      <hr class="section-divider" />
-    </div>`;
+  while ((m = re.exec(bodyMd)) !== null) {
+    renderChunk(bodyMd.slice(last, m.index));
+    const comment = (m[1] || "").trim();
+    if (comment) {
+      html += mashCommentHTML(comment);
+      html += `<hr class="section-divider" />`;
+    }
+    last = m.index + m[0].length;
   }
+  // 末尾（最後のコメント以降）
+  renderChunk(bodyMd.slice(last));
   return html;
 }
 

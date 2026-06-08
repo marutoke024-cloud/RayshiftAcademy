@@ -772,28 +772,23 @@ a {
 }
 
 /* セクション区切りと、その直上のマシュコメント */
-.learn-section {
-  margin-bottom: 4px;
-}
+/* セクション区切り（実線）。マシュコメントの直下に置く */
 .section-divider {
   border: none;
-  border-top: 2px dashed var(--primary-soft-2);
-  margin: 18px 0 22px;
-}
-.learn-section:last-child .section-divider {
-  display: none;
+  border-top: 1.5px solid var(--border-strong);
+  margin: 14px 0 22px;
 }
 
 /* マシュのひとことコメント（吹き出し） */
 .mash-comment {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin: 14px 0 4px;
+  align-items: center;
+  gap: 14px;
+  margin: 16px 0 6px;
 }
 .mash-comment-icon {
-  width: 44px;
-  height: 44px;
+  width: 84px; /* アイコンを大きく（旧 44px の約2倍） */
+  height: 84px;
   border-radius: 50%;
   object-fit: contain; /* チビマシュ全身を表示 */
   flex-shrink: 0;
@@ -815,13 +810,13 @@ a {
   content: "";
   position: absolute;
   left: -7px;
-  top: 14px;
+  top: 50%;
   width: 12px;
   height: 12px;
   background: var(--primary-soft);
   border-left: 1px solid var(--primary-soft-2);
   border-bottom: 1px solid var(--primary-soft-2);
-  transform: rotate(45deg);
+  transform: translateY(-50%) rotate(45deg);
 }
 
 /* リコールページ */
