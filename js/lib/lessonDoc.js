@@ -56,6 +56,8 @@ export function parseLesson(mdText) {
   return {
     title: data.title || "(Untitled Lesson)",
     date: data.date || "",
+    // フロントマターを除いた本文全体（詳細表示はこれをそのままレンダリング）
+    content,
     situation: findSection(sections, "Situation"),
     yourResponse: findSection(sections, "Your Response"),
     feedback: {

@@ -14,6 +14,7 @@
 import { navigate } from "../app.js";
 import { escapeHtml, toast } from "../utils.js";
 import { renderMarkdown } from "../lib/markdown.js";
+import { parseFrontmatter } from "../lib/frontmatter.js";
 import { createMashBubble } from "../components/mash.js";
 import {
   listLessons,
@@ -172,7 +173,11 @@ async function renderLessonDetail(root, id) {
     return;
   }
 
-  const fb = l.feedback || {};
+  // フロントマターを除いた本文全体をそのままレンダリング（見出し名の差異や
+  // 追加コンテンツがあっても欠落・崩れが起きないようにする）
+  const bodyMd =
+    l.content || (l.raw ? parseFrontmatter(l.raw).content : "") || "";
+
   root.innerHTML = `
     <div class="page english-page" lang="en">
       <div class="page-topbar">
@@ -185,12 +190,7 @@ async function renderLessonDetail(root, id) {
       </header>
 
       <section class="card lesson-section" id="lesson-content">
-        ${section("🎬 Situation", l.situation)}
-        ${section("💬 Your Response", l.yourResponse)}
-        <h2 class="lesson-h2">🛡️ Mash's Feedback</h2>
-        ${section("✅ What You Did Well", fb.wellDone, 3)}
-        ${section("✨ More Natural Expressions & Corrections", fb.corrections, 3)}
-        ${section("💌 From Mash", fb.fromMash, 3)}
+        <div class="md-body lesson-body">${renderMarkdown(bodyMd)}</div>
       </section>
 
       <section class="card">
@@ -226,14 +226,6 @@ async function renderLessonDetail(root, id) {
 
   // drag-select → Add to Phrase Bank
   setupPhraseSelection(root.querySelector("#lesson-content"), l);
-
-  function section(title, body, level = 2) {
-    if (!body || !body.trim()) return "";
-    const tag = level === 3 ? "h3" : "h2";
-    const cls = level === 3 ? "lesson-h3" : "lesson-h2";
-    return `<${tag} class="${cls}">${title}</${tag}>
-      <div class="md-body lesson-body">${renderMarkdown(body)}</div>`;
-  }
 }
 
 // drag-select popup
@@ -343,26 +335,83 @@ function openImportDialog(root) {
   overlay.className = "form-overlay";
   overlay.innerHTML = `
     <div class="form-modal card" lang="en">
-      <h2 class="section-title" style="margin-top:0">＋ Import Lesson</h2>
-      <p class="page-sub">Drop a .md file, or paste the lesson markdown below.</p>
-      <input type="file" id="imp-file" accept=".md,text/markdown" />
-      <textarea id="imp-text" class="field-input" style="min-height:200px;margin-top:10px"
+      <h2 class="section-title" style="margin-top:0">＋ Import Lesson(s)</h2>
+      <p class="page-sub">Import a whole folder, pick one or more .md files, or paste markdown below.</p>
+      <div class="import-actions" style="margin-top:0">
+        <button class="btn btn-ghost" id="imp-pick-folder">📁 Import folder</button>
+        <button class="btn btn-ghost" id="imp-pick-files">📄 Choose .md file(s)</button>
+      </div>
+      <div id="imp-status" class="import-status" hidden></div>
+      <textarea id="imp-text" class="field-input" style="min-height:180px;margin-top:10px"
         placeholder="---\ntitle: ...\ndate: ...\n---\n\n## Situation\n..."></textarea>
+      <input type="file" id="imp-folder" webkitdirectory directory multiple hidden />
+      <input type="file" id="imp-files" accept=".md,text/markdown" multiple hidden />
       <div class="form-actions">
         <button class="btn btn-ghost" id="imp-cancel">Cancel</button>
-        <button class="btn btn-primary" id="imp-save">Import</button>
+        <button class="btn btn-primary" id="imp-save">Import pasted</button>
       </div>
     </div>
   `;
   document.body.appendChild(overlay);
 
   const textArea = overlay.querySelector("#imp-text");
-  overlay.querySelector("#imp-file").addEventListener("change", async (e) => {
-    const file = e.target.files?.[0];
-    if (file) textArea.value = await file.text();
+  const statusEl = overlay.querySelector("#imp-status");
+  const folderInput = overlay.querySelector("#imp-folder");
+  const filesInput = overlay.querySelector("#imp-files");
+  const close = () => overlay.remove();
+
+  const setStatus = (msg, busy = false) => {
+    statusEl.hidden = false;
+    statusEl.textContent = msg;
+    statusEl.classList.toggle("busy", busy);
+  };
+
+  // フォルダ / 複数ファイルから .md を一括取り込み
+  async function importFromFileList(fileList) {
+    const files = Array.from(fileList || []).filter(
+      (f) => /\.md$/i.test(f.name) || f.type === "text/markdown"
+    );
+    if (files.length === 0) {
+      toast("No .md files found", "warn");
+      return;
+    }
+    setStatus(`Importing… (0/${files.length})`, true);
+    let ok = 0;
+    for (const f of files) {
+      try {
+        const text = await f.text();
+        if (text.trim()) {
+          await importLessonMd(text);
+          ok++;
+          setStatus(`Importing… (${ok}/${files.length})`, true);
+        }
+      } catch (err) {
+        console.error("Lesson import failed:", f.name, err);
+      }
+    }
+    setStatus(`Imported ${ok} lesson(s).`, false);
+    toast(`Imported ${ok} lesson(s)`, ok ? "success" : "warn");
+    if (ok) {
+      close();
+      renderEnglishClass(root, []);
+    }
+  }
+
+  overlay
+    .querySelector("#imp-pick-folder")
+    .addEventListener("click", () => folderInput.click());
+  overlay
+    .querySelector("#imp-pick-files")
+    .addEventListener("click", () => filesInput.click());
+  folderInput.addEventListener("change", () => {
+    importFromFileList(folderInput.files);
+    folderInput.value = "";
+  });
+  filesInput.addEventListener("change", () => {
+    importFromFileList(filesInput.files);
+    filesInput.value = "";
   });
 
-  const close = () => overlay.remove();
   overlay.querySelector("#imp-cancel").addEventListener("click", close);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) close();

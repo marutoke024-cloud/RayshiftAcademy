@@ -38,6 +38,7 @@ export async function importLessonMd(mdText) {
   const doc = {
     title: parsed.title,
     date: parsed.date || new Date().toISOString().slice(0, 10),
+    content: parsed.content, // フロントマター除去済み本文（詳細表示用）
     situation: parsed.situation,
     yourResponse: parsed.yourResponse,
     feedback: parsed.feedback,
