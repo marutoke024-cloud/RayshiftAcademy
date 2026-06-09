@@ -15,6 +15,8 @@ import { renderRecall } from "./views/recall.js";
 import { renderFeedback } from "./views/feedback.js";
 import { renderReview } from "./views/review.js";
 import { renderMixReview } from "./views/mixReview.js";
+import { renderDesignCourse } from "./views/designCourse.js";
+import { renderEnglishClass } from "./views/englishClass.js";
 
 const appRoot = () => document.getElementById("app");
 
@@ -44,6 +46,10 @@ async function route() {
       await renderHome(root);
     } else if (parts[0] === "mix-review") {
       await renderMixReview(root);
+    } else if (parts[0] === "design") {
+      await renderDesignCourse(root);
+    } else if (parts[0] === "english") {
+      await renderEnglishClass(root, parts.slice(1));
     } else if (parts[0] === "curriculum" && parts[1]) {
       const curriculumId = decodeURIComponent(parts[1]);
       // #/curriculum/:id/review
@@ -98,6 +104,10 @@ function setupHeader() {
         onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'brand-mark',textContent:'✨'}))" />
       <span class="brand-name">Rayshift&nbsp;Academy</span>
     </a>
+    <nav class="header-nav">
+      <a class="header-link" href="#/design">🎨 デザイン講座</a>
+      <a class="header-link" href="#/english">🛡️ English</a>
+    </nav>
     <div class="header-right">
       <span class="device-pill">${isPC() ? "PC モード" : "復習モード（モバイル）"}</span>
     </div>

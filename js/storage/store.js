@@ -37,10 +37,17 @@ export const store = {
   saveAsset: (...a) => backend.saveAsset(...a),
   getAsset: (...a) => backend.getAsset(...a),
   listAssets: (...a) => backend.listAssets(...a),
+  deleteAsset: (...a) => backend.deleteAsset(...a),
 
   // ステップ md（Firebase Storage: curricula/{cid}/{stepId}.md）
   saveStepMd: (...a) => backend.saveStepMd(...a),
   getStepMd: (...a) => backend.getStepMd(...a),
+
+  // 汎用ドキュメントコレクション（tips / english_lessons / phrase_bank）
+  saveDoc: (...a) => backend.saveDoc(...a),
+  getDoc: (...a) => backend.getDoc(...a),
+  listDocs: (...a) => backend.listDocs(...a),
+  deleteDoc: (...a) => backend.deleteDoc(...a),
 
   // メタ
   saveMeta: (...a) => backend.saveMeta(...a),

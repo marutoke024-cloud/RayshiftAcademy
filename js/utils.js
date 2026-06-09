@@ -148,6 +148,14 @@ export function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** ランダムな ID 文字列を生成（ドキュメント ID 用） */
+export function uid(prefix = "") {
+  const rnd =
+    (crypto && crypto.randomUUID && crypto.randomUUID().replace(/-/g, "")) ||
+    Math.random().toString(36).slice(2) + Date.now().toString(36);
+  return prefix ? `${prefix}_${rnd.slice(0, 16)}` : rnd.slice(0, 20);
+}
+
 /** 軽量トースト通知 */
 export function toast(message, type = "info") {
   let host = document.getElementById("toast-host");

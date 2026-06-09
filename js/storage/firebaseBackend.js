@@ -163,6 +163,15 @@ export const firebaseBackend = {
     );
   },
 
+  async deleteAsset(path) {
+    await ready();
+    try {
+      await st.deleteObject(assetRef(path));
+    } catch (e) {
+      if (e && e.code !== "storage/object-not-found") throw e;
+    }
+  },
+
   // ---------- ステップ md（Storage: curricula/{cid}/{sid}.md） ----------
   async saveStepMd(curriculumId, stepId, md) {
     await ready();
@@ -184,6 +193,31 @@ export const firebaseBackend = {
       if (e && e.code === "storage/object-not-found") return null;
       throw e;
     }
+  },
+
+  // ---------- 汎用ドキュメントコレクション（users/{uid}/{coll}/{id}） ----------
+  async saveDoc(coll, id, data) {
+    await ready();
+    const rec = { ...data, id };
+    await fs.setDoc(fs.doc(db, "users", uid, coll, id), clean(rec));
+    return rec;
+  },
+
+  async getDoc(coll, id) {
+    await ready();
+    const d = await fs.getDoc(fs.doc(db, "users", uid, coll, id));
+    return d.exists() ? d.data() : null;
+  },
+
+  async listDocs(coll) {
+    await ready();
+    const snap = await fs.getDocs(fs.collection(db, "users", uid, coll));
+    return snap.docs.map((d) => d.data());
+  },
+
+  async deleteDoc(coll, id) {
+    await ready();
+    await fs.deleteDoc(fs.doc(db, "users", uid, coll, id));
   },
 
   // ---------- 汎用メタ ----------

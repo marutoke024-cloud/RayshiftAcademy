@@ -88,6 +88,10 @@ export const localBackend = {
     return await idb.getAll(STORES.ASSETS);
   },
 
+  async deleteAsset(path) {
+    await idb.delete(STORES.ASSETS, path);
+  },
+
   // ---------- ステップ md（ローカルでは META に保持） ----------
   async saveStepMd(curriculumId, stepId, md) {
     const key = `md:${stepKey(curriculumId, stepId)}`;
@@ -99,6 +103,30 @@ export const localBackend = {
     const key = `md:${stepKey(curriculumId, stepId)}`;
     const rec = await idb.get(STORES.META, key);
     return rec ? rec.value : null;
+  },
+
+  // ---------- 汎用ドキュメントコレクション（META に prefix 保存） ----------
+  async saveDoc(coll, id, data) {
+    const rec = { ...data, id };
+    await idb.put(STORES.META, { key: `doc:${coll}:${id}`, value: rec });
+    return rec;
+  },
+
+  async getDoc(coll, id) {
+    const r = await idb.get(STORES.META, `doc:${coll}:${id}`);
+    return r ? r.value : null;
+  },
+
+  async listDocs(coll) {
+    const all = await idb.getAll(STORES.META);
+    const prefix = `doc:${coll}:`;
+    return all
+      .filter((r) => typeof r.key === "string" && r.key.startsWith(prefix))
+      .map((r) => r.value);
+  },
+
+  async deleteDoc(coll, id) {
+    await idb.delete(STORES.META, `doc:${coll}:${id}`);
   },
 
   // ---------- 汎用メタ（称号スナップショットなど） ----------
