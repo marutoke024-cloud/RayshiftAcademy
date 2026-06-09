@@ -114,7 +114,7 @@ function setupHeader() {
     </a>
     <nav class="header-nav">
       <a class="header-link" href="#/design">🎨 デザイン講座</a>
-      <a class="header-link" href="#/english">🛡️ English</a>
+      <a class="header-link" href="#/english">🛡️ マシュの英語教室</a>
     </nav>
     <div class="header-right">
       <button class="header-help" id="header-help" aria-label="使い方">？</button>

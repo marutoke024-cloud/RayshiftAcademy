@@ -98,6 +98,8 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap; /* 狭い画面でナビが見切れないよう折り返す */
+  row-gap: 8px;
   gap: var(--gap);
   padding: 10px var(--pad-x);
   min-height: var(--header-h);
