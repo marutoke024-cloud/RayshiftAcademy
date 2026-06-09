@@ -15,7 +15,9 @@ import { navigate } from "../app.js";
 import { escapeHtml, toast } from "../utils.js";
 import { renderMarkdown } from "../lib/markdown.js";
 import { parseFrontmatter } from "../lib/frontmatter.js";
+import { splitLessonSections } from "../lib/lessonDoc.js";
 import { createMashBubble } from "../components/mash.js";
+import { mashIconUrl, iconOnerrorAttr } from "../lib/mashIcon.js";
 import {
   listLessons,
   getLesson,
@@ -173,8 +175,8 @@ async function renderLessonDetail(root, id) {
     return;
   }
 
-  // フロントマターを除いた本文全体をそのままレンダリング（見出し名の差異や
-  // 追加コンテンツがあっても欠落・崩れが起きないようにする）
+  // フロントマターを除いた本文全体（見出し名の差異や追加コンテンツがあっても
+  // 欠落しないよう全文を対象にする）
   const bodyMd =
     l.content || (l.raw ? parseFrontmatter(l.raw).content : "") || "";
 
@@ -190,7 +192,7 @@ async function renderLessonDetail(root, id) {
       </header>
 
       <section class="card lesson-section" id="lesson-content">
-        <div class="md-body lesson-body">${renderMarkdown(bodyMd)}</div>
+        ${buildLessonHTML(bodyMd)}
       </section>
 
       <section class="card">
@@ -226,6 +228,67 @@ async function renderLessonDetail(root, id) {
 
   // drag-select → Add to Phrase Bank
   setupPhraseSelection(root.querySelector("#lesson-content"), l);
+}
+
+// レッスン本文を描画。マシュの発言（フィードバック各節）は
+// SD アイコン＋吹き出しで表示（学習カリキュラムと同様）。それ以外・未知の
+// 見出しは通常表示で欠落させない。
+function buildLessonHTML(bodyMd) {
+  const sections = splitLessonSections(bodyMd);
+  // 見出しが無い（プレーン文）→ 全文そのまま
+  if (sections.length === 0) {
+    return `<div class="md-body lesson-body">${renderMarkdown(bodyMd)}</div>`;
+  }
+
+  const MASH_NAMES = new Set([
+    "what you did well",
+    "more natural expressions & corrections",
+    "corrections",
+    "from mash",
+  ]);
+  const isMashName = (h) => MASH_NAMES.has(String(h).trim().toLowerCase());
+  const isFeedbackContainer = (h) => /feedback/i.test(h) || /^mash/i.test(h);
+
+  let html = "";
+  let inFeedback = false;
+
+  for (const s of sections) {
+    const bodyHtml =
+      s.body && s.body.trim()
+        ? `<div class="md-body lesson-body">${renderMarkdown(s.body)}</div>`
+        : "";
+
+    // マシュの発言: 既知のフィードバック見出し、または「Mash's Feedback」配下の小見出し
+    if (isMashName(s.heading) || (inFeedback && s.level >= 3)) {
+      html += mashColumnHTML(s.heading, s.body);
+      continue;
+    }
+
+    // 「Mash's Feedback」コンテナ → 見出しのみ表示し、以降をフィードバック扱い
+    if (s.level === 2 && isFeedbackContainer(s.heading)) {
+      inFeedback = true;
+      html += `<h2 class="lesson-h2">🛡️ ${escapeHtml(s.heading)}</h2>${bodyHtml}`;
+      continue;
+    }
+
+    // それ以外（Situation / Your Response / 未知の節）は通常表示
+    inFeedback = false;
+    const tag = s.level >= 3 ? "h3" : "h2";
+    const cls = s.level >= 3 ? "lesson-h3" : "lesson-h2";
+    html += `<${tag} class="${cls}">${escapeHtml(s.heading)}</${tag}>${bodyHtml}`;
+  }
+  return html;
+}
+
+function mashColumnHTML(label, body) {
+  return `<div class="lesson-mash">
+    <img class="lesson-mash-icon" src="${mashIconUrl()}" alt="マシュ"
+      onerror="${iconOnerrorAttr()}" />
+    <div class="lesson-mash-bubble">
+      <div class="lesson-mash-label">${escapeHtml(label)}</div>
+      <div class="md-body">${renderMarkdown(body || "")}</div>
+    </div>
+  </div>`;
 }
 
 // drag-select popup

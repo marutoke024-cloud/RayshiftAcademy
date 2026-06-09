@@ -16,6 +16,11 @@
 
 import { parseFrontmatter } from "./frontmatter.js";
 
+/** 本文を見出し（## / ###）単位のセクションに分割（外部公開） */
+export function splitLessonSections(content) {
+  return splitByHeadings(content);
+}
+
 /** 本文を見出し（## / ###）単位のセクションに分割 */
 function splitByHeadings(content) {
   const lines = content.split(/\r?\n/);
