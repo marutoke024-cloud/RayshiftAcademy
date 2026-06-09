@@ -131,13 +131,20 @@ export async function renderRecall(root, curriculumId, stepId) {
       toast("理解メモを入力してください", "warn");
       return null;
     }
-    const { mdDoc } = await saveUnderstandingNote(curriculumId, stepId, note, {
-      general: taGeneral.value,
-      keyConcept: taKey.value,
-    });
+    const { mdDoc, storageOk } = await saveUnderstandingNote(
+      curriculumId,
+      stepId,
+      note,
+      { general: taGeneral.value, keyConcept: taKey.value }
+    );
     if (showDownload) {
       downloadText(`${stepId}.md`, mdDoc);
-      toast("理解メモを保存し、md をダウンロードしました", "success");
+      toast(
+        storageOk
+          ? "理解メモを保存し、Storage へアップロード＋md をダウンロードしました"
+          : "理解メモを保存し md をダウンロードしました（Storage へは未アップロード）",
+        "success"
+      );
     }
     return { note, mdDoc };
   }

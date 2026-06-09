@@ -35,7 +35,20 @@ export async function saveUnderstandingNote(curriculumId, stepId, noteText, raw 
   step.updatedAt = new Date().toISOString();
 
   const saved = await store.saveStep(curriculumId, step);
-  return { step: saved, mdDoc: step.mdDoc };
+  // md を Storage（curricula/{cid}/{stepId}.md）へアップロード（失敗は非致命）
+  const storageOk = await uploadStepMd(curriculumId, stepId, step.mdDoc);
+  return { step: saved, mdDoc: step.mdDoc, storageOk };
+}
+
+/** ステップ md を Storage へアップロード。失敗しても処理は止めない。 */
+async function uploadStepMd(curriculumId, stepId, mdDoc) {
+  try {
+    await store.saveStepMd(curriculumId, stepId, mdDoc);
+    return true;
+  } catch (e) {
+    console.warn("md の Storage アップロードに失敗しました:", e);
+    return false;
+  }
 }
 
 function appendFeedback(existing, addition) {
@@ -72,6 +85,8 @@ export async function completeStepWithFeedback(
   }
   step.mdDoc = buildExportMd(curriculum, step);
   await store.saveStep(curriculumId, step);
+  // フィードバックを追記した md を Storage へ反映（失敗は非致命）
+  const storageOk = await uploadStepMd(curriculumId, stepId, step.mdDoc);
 
   // 次ステップを解錠
   const sorted = [...steps].sort((a, b) => (a.step || 0) - (b.step || 0));
@@ -115,6 +130,7 @@ export async function completeStepWithFeedback(
     unlocked,
     allCompleted,
     masteryGain,
+    storageOk,
   };
 }
 

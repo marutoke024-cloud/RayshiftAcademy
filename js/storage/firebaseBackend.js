@@ -64,6 +64,8 @@ const metaCol = () => fs.collection(db, "users", uid, "meta");
 const metaDoc = (key) => fs.doc(db, "users", uid, "meta", key);
 const assetRef = (path) => st.ref(storage, `users/${uid}/assets/${path}`);
 const assetsDir = () => st.ref(storage, `users/${uid}/assets`);
+const stepMdRef = (cid, sid) =>
+  st.ref(storage, `users/${uid}/curricula/${cid}/${sid}.md`);
 
 export const firebaseBackend = {
   name: "firebase",
@@ -102,6 +104,14 @@ export const firebaseBackend = {
     const snap = await fs.getDocs(stepsCol(id));
     await Promise.all(snap.docs.map((d) => fs.deleteDoc(d.ref)));
     await fs.deleteDoc(curriculumDoc(id));
+    // Storage 上の md ファイルも削除
+    try {
+      const dir = st.ref(storage, `users/${uid}/curricula/${id}`);
+      const res = await st.listAll(dir);
+      await Promise.all(res.items.map((i) => st.deleteObject(i)));
+    } catch (_) {
+      /* md ディレクトリが無い場合は無視 */
+    }
   },
 
   // ---------- ステップ ----------
@@ -153,6 +163,29 @@ export const firebaseBackend = {
     );
   },
 
+  // ---------- ステップ md（Storage: curricula/{cid}/{sid}.md） ----------
+  async saveStepMd(curriculumId, stepId, md) {
+    await ready();
+    // UTF-8 を確実に保持するため Blob（uploadBytes）で送る
+    const blob = new Blob([md ?? ""], {
+      type: "text/markdown;charset=utf-8",
+    });
+    await st.uploadBytes(stepMdRef(curriculumId, stepId), blob);
+    return await st.getDownloadURL(stepMdRef(curriculumId, stepId));
+  },
+
+  async getStepMd(curriculumId, stepId) {
+    await ready();
+    try {
+      const url = await st.getDownloadURL(stepMdRef(curriculumId, stepId));
+      const res = await fetch(url);
+      return res.ok ? await res.text() : null;
+    } catch (e) {
+      if (e && e.code === "storage/object-not-found") return null;
+      throw e;
+    }
+  },
+
   // ---------- 汎用メタ ----------
   async saveMeta(key, value) {
     await ready();
@@ -175,6 +208,14 @@ export const firebaseBackend = {
         const steps = await fs.getDocs(stepsCol(d.id));
         await Promise.all(steps.docs.map((s) => fs.deleteDoc(s.ref)));
         await fs.deleteDoc(d.ref);
+        // Storage の md も削除
+        try {
+          const dir = st.ref(storage, `users/${uid}/curricula/${d.id}`);
+          const res = await st.listAll(dir);
+          await Promise.all(res.items.map((i) => st.deleteObject(i)));
+        } catch (_) {
+          /* 無視 */
+        }
       })
     );
     const meta = await fs.getDocs(metaCol());

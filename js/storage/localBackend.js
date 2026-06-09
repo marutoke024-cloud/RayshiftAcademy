@@ -88,6 +88,19 @@ export const localBackend = {
     return await idb.getAll(STORES.ASSETS);
   },
 
+  // ---------- ステップ md（ローカルでは META に保持） ----------
+  async saveStepMd(curriculumId, stepId, md) {
+    const key = `md:${stepKey(curriculumId, stepId)}`;
+    await idb.put(STORES.META, { key, value: md });
+    return md;
+  },
+
+  async getStepMd(curriculumId, stepId) {
+    const key = `md:${stepKey(curriculumId, stepId)}`;
+    const rec = await idb.get(STORES.META, key);
+    return rec ? rec.value : null;
+  },
+
   // ---------- 汎用メタ（称号スナップショットなど） ----------
   async saveMeta(key, value) {
     await idb.put(STORES.META, { key, value });

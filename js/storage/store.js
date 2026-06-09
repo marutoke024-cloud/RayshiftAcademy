@@ -38,6 +38,10 @@ export const store = {
   getAsset: (...a) => backend.getAsset(...a),
   listAssets: (...a) => backend.listAssets(...a),
 
+  // ステップ md（Firebase Storage: curricula/{cid}/{stepId}.md）
+  saveStepMd: (...a) => backend.saveStepMd(...a),
+  getStepMd: (...a) => backend.getStepMd(...a),
+
   // メタ
   saveMeta: (...a) => backend.saveMeta(...a),
   getMeta: (...a) => backend.getMeta(...a),
