@@ -6,9 +6,7 @@
 
 import { store } from "../storage/store.js";
 import { escapeHtml } from "../utils.js";
-
-// 同梱の静的アイコン（インポート画像が無いときのフォールバック）
-const STATIC_MASH = "./assets/mash_icon.png";
+import { mashIconUrl, MASH_FALLBACK } from "../lib/mashIcon.js";
 
 let cachedMashUrl;
 
@@ -35,13 +33,16 @@ export async function createMashBubble(text, opts = {}) {
   el.className = "mash-bubble";
 
   const uploaded = await getMashImageURL();
-  const src = uploaded || STATIC_MASH;
+  const src = uploaded || mashIconUrl();
   // 同梱の全身イラストは顔が見えるよう上寄せ（is-fallback）
   const fallbackClass = uploaded ? "" : " is-fallback";
-  // 画像が読めなければプレースホルダーに差し替え
+  // 番号付きアイコンが無ければ mash_icon.png → それも無ければプレースホルダー
+  const onerr = uploaded
+    ? `this.onerror=null;this.outerHTML='<div class=&quot;mash-avatar mash-placeholder&quot; style=&quot;width:${size}px;height:${size}px&quot;>マシュ</div>'`
+    : `this.onerror=function(){this.onerror=null;this.outerHTML='<div class=&quot;mash-avatar mash-placeholder&quot; style=&quot;width:${size}px;height:${size}px&quot;>マシュ</div>'};this.src='${MASH_FALLBACK}'`;
   const avatar = `<img class="mash-avatar${fallbackClass}" src="${src}" alt="マシュ"
       width="${size}" height="${size}"
-      onerror="this.onerror=null;this.outerHTML='<div class=&quot;mash-avatar mash-placeholder&quot; style=&quot;width:${size}px;height:${size}px&quot;>マシュ</div>'" />`;
+      onerror="${onerr}" />`;
 
   // 改行（句点改行など）を <br> として表示
   const speechHtml = escapeHtml(text).replace(/\n/g, "<br>");

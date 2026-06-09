@@ -17,6 +17,9 @@ import { renderReview } from "./views/review.js";
 import { renderMixReview } from "./views/mixReview.js";
 import { renderDesignCourse } from "./views/designCourse.js";
 import { renderEnglishClass } from "./views/englishClass.js";
+import { mountChatWidget, refreshChatWidgetIcon } from "./components/chatWidget.js";
+import { openHelpModal } from "./components/helpModal.js";
+import { rerollMashIcon, mashIconUrl, iconOnerrorAttr } from "./lib/mashIcon.js";
 
 const appRoot = () => document.getElementById("app");
 
@@ -40,6 +43,11 @@ async function route() {
   const root = appRoot();
   if (!root) return;
   const { parts } = parseHash();
+
+  // ページ遷移ごとにマシュアイコンを選び直す（ページ内は同一画像）
+  rerollMashIcon();
+  setupHeader();
+  refreshChatWidgetIcon();
 
   try {
     if (parts.length === 0) {
@@ -100,8 +108,8 @@ function setupHeader() {
   if (!header) return;
   header.innerHTML = `
     <a class="brand" href="#/">
-      <img class="brand-logo" src="./assets/mash_icon.png" alt="Rayshift Academy"
-        onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'brand-mark',textContent:'✨'}))" />
+      <img class="brand-logo" src="${mashIconUrl()}" alt="Rayshift Academy"
+        onerror="${iconOnerrorAttr()}" />
       <span class="brand-name">Rayshift&nbsp;Academy</span>
     </a>
     <nav class="header-nav">
@@ -109,9 +117,13 @@ function setupHeader() {
       <a class="header-link" href="#/english">🛡️ English</a>
     </nav>
     <div class="header-right">
+      <button class="header-help" id="header-help" aria-label="使い方">？</button>
       <span class="device-pill">${isPC() ? "PC モード" : "復習モード（モバイル）"}</span>
     </div>
   `;
+  header
+    .querySelector("#header-help")
+    ?.addEventListener("click", openHelpModal);
 }
 
 function applyDeviceClass() {
@@ -121,6 +133,7 @@ function applyDeviceClass() {
 async function boot() {
   applyDeviceClass();
   setupHeader();
+  mountChatWidget(); // 全ページ右下に常駐
   try {
     await store.init();
     console.info(`ストレージ: ${store.backendName} バックエンドを使用`);

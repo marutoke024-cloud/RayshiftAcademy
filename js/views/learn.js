@@ -21,6 +21,7 @@ import {
   cleanMemoText,
 } from "../lib/stepDoc.js";
 import { createMashBubble } from "../components/mash.js";
+import { mashIconUrl, iconOnerrorAttr } from "../lib/mashIcon.js";
 
 const MEMO_HEADING = "一口メモ";
 
@@ -176,8 +177,8 @@ function buildSectionsHTML(bodyMd) {
 
 function mashCommentHTML(text) {
   return `<div class="mash-comment">
-    <img class="mash-comment-icon" src="./assets/mash_icon.png" alt="マシュ"
-      onerror="this.onerror=null;this.src='./assets/mash_bg.jpg';this.classList.add('is-fallback')" />
+    <img class="mash-comment-icon" src="${mashIconUrl()}" alt="マシュ"
+      onerror="${iconOnerrorAttr()}" />
     <div class="mash-comment-text">${escapeHtml(text)}</div>
   </div>`;
 }
