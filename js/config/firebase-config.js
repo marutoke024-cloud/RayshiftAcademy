@@ -12,16 +12,16 @@
 // =====================================================================
 
 // Firebase を使うかどうか（false の間はローカル IndexedDB を使用）
-export const USE_FIREBASE = false;
+export const USE_FIREBASE = true;
 
 // Firebase コンソールからコピーした設定をここに貼り付け
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyAcBxusT9NMApCy971E1CxE93dJKzUZJjw",
+  authDomain: "rayshift-academy.firebaseapp.com",
+  projectId: "rayshift-academy",
+  storageBucket: "rayshift-academy.firebasestorage.app",
+  messagingSenderId: "866533784515",
+  appId: "1:866533784515:web:790ac53d42c7f50a89db76",
 };
 
 // 個人利用アプリのため、当面は固定のユーザー ID を使用します。
