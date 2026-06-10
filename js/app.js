@@ -7,7 +7,7 @@
 // =====================================================================
 
 import { store } from "./storage/store.js";
-import { isPC, deviceClass, toast } from "./utils.js";
+import { deviceClass, toast } from "./utils.js";
 import { renderHome } from "./views/home.js";
 import { renderCurriculumDetail } from "./views/detail.js";
 import { renderLearn } from "./views/learn.js";
@@ -66,16 +66,10 @@ async function route() {
         return;
       }
       // #/curriculum/:id/step/:stepId/(learn|recall|feedback)
+      // 全デバイスで学習フローを利用可能（モバイルも PC と同じ機能）
       if (parts[2] === "step" && parts[3]) {
         const stepId = decodeURIComponent(parts[3]);
         const mode = parts[4] || "learn";
-        // モバイル/タブレットは復習専用 → 学習フローは復習モードへ誘導
-        if (!isPC()) {
-          toast("学習は PC で行えます。モバイルは復習専用です", "info");
-          await renderReview(root, curriculumId);
-          window.scrollTo({ top: 0 });
-          return;
-        }
         if (mode === "recall") {
           await renderRecall(root, curriculumId, stepId);
         } else if (mode === "feedback") {
@@ -117,7 +111,6 @@ function setupHeader() {
     </nav>
     <div class="header-right">
       <button class="header-sync" id="header-sync" aria-label="同期">🔄 同期</button>
-      <span class="device-pill">${isPC() ? "PC モード" : "復習モード（モバイル）"}</span>
     </div>
   `;
   header
@@ -179,16 +172,10 @@ async function boot() {
 
   window.addEventListener("hashchange", route);
 
-  // 画面サイズ / 向きの変化に追従（PC⇔モバイルが切り替わったら再描画）
-  let lastPC = isPC();
+  // 画面サイズ / 向きの変化に追従（全デバイス同一機能なので CSS 用クラスのみ更新。
+  // 入力中の内容を失わないよう route() の再描画はしない）
   const onResize = debounce(() => {
     applyDeviceClass();
-    setupHeader();
-    const nowPC = isPC();
-    if (nowPC !== lastPC) {
-      lastPC = nowPC;
-      route(); // 利用可能機能が変わるので画面を作り直す
-    }
   }, 200);
   window.addEventListener("resize", onResize);
   window.addEventListener("orientationchange", onResize);

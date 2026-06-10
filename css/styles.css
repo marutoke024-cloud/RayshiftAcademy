@@ -1203,13 +1203,10 @@ body {
   }
 }
 
-/* モバイル（復習専用）端末向けの微調整 */
+/* モバイル端末向けの微調整（全機能利用可。学習ステップ表示も残す） */
 body[data-device="mobile"] .app-main {
   /* iOS のセーフエリアに配慮 */
   padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
-}
-body[data-device="mobile"] .flow-steps {
-  display: none; /* 復習モードでは学習ステップ表示は不要 */
 }
 
 /* iPad ポートレート帯（〜900px）: 本棚は 2 カラムで詰めすぎない */
