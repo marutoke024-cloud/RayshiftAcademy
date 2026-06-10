@@ -2099,6 +2099,94 @@ input[type="text"].field-input:focus {
   line-height: 1.7;
   font-size: 0.9rem;
 }
+.help-p {
+  line-height: 1.7;
+  margin: 4px 0;
+}
+.help-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* コンテキスト別ヘルプの「？」ボタン */
+.help-btn-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--primary-strong);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.help-btn-inline:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+.help-slot {
+  display: inline-flex;
+  align-items: center;
+}
+.page-help-row {
+  display: flex;
+  justify-content: flex-end;
+}
+.topbar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ヘッダー同期ボタン */
+.header-sync {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.82rem;
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.header-sync:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 同期中インジケータ */
+.sync-indicator {
+  position: fixed;
+  top: calc(var(--header-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  z-index: 420;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sync-spinner {
+  display: inline-block;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* タッチ端末ではボタンを少し大きく */
 @media (hover: none), (pointer: coarse) {

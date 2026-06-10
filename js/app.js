@@ -18,7 +18,6 @@ import { renderMixReview } from "./views/mixReview.js";
 import { renderDesignCourse } from "./views/designCourse.js";
 import { renderEnglishClass } from "./views/englishClass.js";
 import { mountChatWidget, refreshChatWidgetIcon } from "./components/chatWidget.js";
-import { openHelpModal } from "./components/helpModal.js";
 import { rerollMashIcon, mashIconUrl, iconOnerrorAttr } from "./lib/mashIcon.js";
 
 const appRoot = () => document.getElementById("app");
@@ -117,17 +116,53 @@ function setupHeader() {
       <a class="header-link" href="#/english">🛡️ マシュの英語教室</a>
     </nav>
     <div class="header-right">
-      <button class="header-help" id="header-help" aria-label="使い方">？</button>
+      <button class="header-sync" id="header-sync" aria-label="同期">🔄 同期</button>
       <span class="device-pill">${isPC() ? "PC モード" : "復習モード（モバイル）"}</span>
     </div>
   `;
   header
-    .querySelector("#header-help")
-    ?.addEventListener("click", openHelpModal);
+    .querySelector("#header-sync")
+    ?.addEventListener("click", syncNow);
 }
 
 function applyDeviceClass() {
   document.body.dataset.device = deviceClass();
+}
+
+// ---------------------------------------------------------------------
+// 手動同期: 押したときだけ Firestore から再取得して現在ページを再描画
+// （リアルタイム同期/onSnapshot は使用しない）
+// ---------------------------------------------------------------------
+let syncing = false;
+async function syncNow() {
+  if (syncing) return;
+  syncing = true;
+  showSyncIndicator(true);
+  try {
+    await route(); // バックエンドから最新を再取得して再描画
+    toast("同期しました", "success");
+  } catch (e) {
+    console.error("同期エラー:", e);
+    toast("同期に失敗しました", "error");
+  } finally {
+    showSyncIndicator(false);
+    syncing = false;
+  }
+}
+
+function showSyncIndicator(on) {
+  let el = document.getElementById("sync-indicator");
+  if (on) {
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "sync-indicator";
+      el.className = "sync-indicator";
+      el.innerHTML = `<span class="sync-spinner">🔄</span> 同期中…`;
+      document.body.appendChild(el);
+    }
+  } else {
+    el?.remove();
+  }
 }
 
 async function boot() {

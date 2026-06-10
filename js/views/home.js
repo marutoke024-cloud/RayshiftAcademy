@@ -17,10 +17,19 @@ import { navigate } from "../app.js";
 import { getLibrary, allCompletedSteps } from "../services/library.js";
 import { pickTodaysStep } from "../services/recommend.js";
 import { computeTitles, persistTitles } from "../services/titles.js";
+import { createHelpButton } from "../components/helpModal.js";
 
 export async function renderHome(root) {
   root.innerHTML = `<div class="home"></div>`;
   const home = root.querySelector(".home");
+
+  // アプリ全体の使い方（？）
+  const helpRow = document.createElement("div");
+  helpRow.className = "page-help-row";
+  helpRow.appendChild(
+    createHelpButton("overview", { label: "❓ アプリの使い方" })
+  );
+  home.appendChild(helpRow);
 
   const library = await getLibrary();
   const curricula = library.map((x) => x.curriculum);

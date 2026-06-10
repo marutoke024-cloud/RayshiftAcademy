@@ -9,7 +9,16 @@
       "mcp__Claude_Preview__preview_start",
       "PowerShell(try { $r = Invoke-WebRequest -UseBasicParsing \"http://localhost:5500/index.html\" -TimeoutSec 8; \"OK $\\($r.StatusCode\\)\" } catch { $s=$_.Exception.Response; if\\($s\\){ $sr=New-Object System.IO.StreamReader\\($s.GetResponseStream\\(\\)\\); \"BODY: \" + $sr.ReadToEnd\\(\\) } else { \"ERR: $\\($_.Exception.Message\\)\" } })",
       "PowerShell($root=\"C:\\\\Users\\\\煮込みカプチーノ\\\\OneDrive\\\\ドキュメント\\\\RayshiftAcademy\"; \"--- assets dir contents ---\"; if\\(Test-Path \"$root\\\\assets\"\\){ Get-ChildItem \"$root\\\\assets\" -Force | Format-Table Name,Length -Auto | Out-String } else { \"assets MISSING\" }; \"--- git tracked in assets ---\"; git -C $root ls-files assets/)",
-      "PowerShell($root=\"C:\\\\Users\\\\煮込みカプチーノ\\\\OneDrive\\\\ドキュメント\\\\RayshiftAcademy\"; \"--- remote ---\"; git -C $root remote -v; \"--- branch & unpushed ---\"; git -C $root status -sb | Select-Object -First 3; \"--- 総ファイル数\\(追跡\\) ---\"; \\(git -C $root ls-files | Measure-Object\\).Count; \"--- ファイル種別 ---\"; git -C $root ls-files | ForEach-Object { [System.IO.Path]::GetExtension\\($_\\) } | Group-Object | Sort-Object Count -Descending | Select-Object Name,Count)"
+      "PowerShell($root=\"C:\\\\Users\\\\煮込みカプチーノ\\\\OneDrive\\\\ドキュメント\\\\RayshiftAcademy\"; \"--- remote ---\"; git -C $root remote -v; \"--- branch & unpushed ---\"; git -C $root status -sb | Select-Object -First 3; \"--- 総ファイル数\\(追跡\\) ---\"; \\(git -C $root ls-files | Measure-Object\\).Count; \"--- ファイル種別 ---\"; git -C $root ls-files | ForEach-Object { [System.IO.Path]::GetExtension\\($_\\) } | Group-Object | Sort-Object Count -Descending | Select-Object Name,Count)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'fix: section-divider を薄紫の background-color 方式に変更（黒線問題を根本解決） *)",
+      "Bash(curl -s \"https://api.github.com/repos/marutoke024-cloud/RayshiftAcademy/pages/builds/latest\")",
+      "Bash(findstr /C:\"status\" /C:\"created\" /C:\"updated\")",
+      "Bash(curl -s \"https://marutoke024-cloud.github.io/RayshiftAcademy/css/styles.css\")",
+      "Bash(findstr /N \"section-divider border-top height:\")",
+      "Bash(curl -s https://marutoke024-cloud.github.io/RayshiftAcademy/css/styles.css?nocache=__TRACKED_VAR__)"
     ]
   }
 }

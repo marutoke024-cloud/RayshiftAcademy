@@ -15,6 +15,7 @@ import { escapeHtml, toast } from "../utils.js";
 import { createMashBubble } from "../components/mash.js";
 import { fileToDataURL, openImageModal } from "../lib/media.js";
 import { openCropModal } from "../components/cropModal.js";
+import { createHelpButton } from "../components/helpModal.js";
 import {
   TIP_CATEGORIES,
   listTips,
@@ -31,7 +32,10 @@ export async function renderDesignCourse(root) {
     <div class="page design-page">
       <div class="page-topbar">
         <button class="btn btn-ghost" id="back">← トップへ</button>
-        <button class="btn btn-primary" id="add-tip">＋ Tips を追加</button>
+        <span class="topbar-right">
+          <button class="btn btn-primary" id="add-tip">＋ Tips を追加</button>
+          <span class="help-slot" id="design-help"></span>
+        </span>
       </div>
       <header class="page-head">
         <h1 class="page-title">🎨 デザイン講座</h1>
@@ -47,6 +51,7 @@ export async function renderDesignCourse(root) {
   root
     .querySelector("#add-tip")
     .addEventListener("click", () => openTipForm(root));
+  root.querySelector("#design-help")?.appendChild(createHelpButton("tips"));
 
   const tips = await listTips();
 

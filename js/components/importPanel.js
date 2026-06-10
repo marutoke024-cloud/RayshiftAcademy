@@ -11,6 +11,7 @@ import {
   importFiles,
 } from "../import/importer.js";
 import { toast } from "../utils.js";
+import { createHelpButton } from "./helpModal.js";
 
 /**
  * @param {() => void} onImported インポート完了後に呼ばれる（一覧再描画など）
@@ -37,8 +38,12 @@ export function createImportPanel(onImported) {
     <div class="import-actions">
       <button class="btn btn-ghost" id="pick-folder">フォルダを選択</button>
       <button class="btn btn-ghost" id="pick-files">ファイルを選択</button>
+      <span class="help-slot" id="import-help-slot"></span>
     </div>
   `;
+  wrap
+    .querySelector("#import-help-slot")
+    .appendChild(createHelpButton("curriculum"));
 
   const dropzone = wrap.querySelector("#dropzone");
   const statusEl = wrap.querySelector("#import-status");

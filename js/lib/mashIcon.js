@@ -45,3 +45,20 @@ export const MASH_FALLBACK = FALLBACK;
 export function iconOnerrorAttr() {
   return `this.onerror=null;this.src='${FALLBACK}'`;
 }
+
+/**
+ * <img> 要素にマシュアイコンを安定適用する。
+ * src を変えるたびに onerror を「再武装」するため、番号付きアイコンが
+ * 404 でも必ず mash_icon.png にフォールバックする（チラつき/未表示を防止）。
+ */
+export function applyMashIcon(img, { sad = false } = {}) {
+  if (!img) return;
+  img.onerror = function () {
+    // フォールバック自身も失敗したら無限ループを避けて停止
+    this.onerror = null;
+    if (this.src.indexOf(FALLBACK.replace("./", "")) === -1) {
+      this.src = FALLBACK;
+    }
+  };
+  img.src = sad ? mashSadUrl() : mashIconUrl();
+}

@@ -13,7 +13,12 @@
 import { navigate } from "../app.js";
 import { escapeHtml } from "../utils.js";
 import { searchAll } from "../services/search.js";
-import { mashIconUrl, mashSadUrl, iconOnerrorAttr } from "../lib/mashIcon.js";
+import {
+  mashIconUrl,
+  mashSadUrl,
+  iconOnerrorAttr,
+  applyMashIcon,
+} from "../lib/mashIcon.js";
 
 const REPLY_HIT = [
   "見つけましたよ、先輩！",
@@ -58,8 +63,6 @@ export function mountChatWidget() {
     </button>
     <div class="chat-panel" id="chat-panel" hidden>
       <div class="chat-header">
-        <img class="chat-head-icon" src="${mashIconUrl()}" alt="マシュ"
-          onerror="${iconOnerrorAttr()}" />
         <div class="chat-head-text">
           <strong>マシュ</strong>
           <span>記録から探します</span>
@@ -163,11 +166,10 @@ export function mountChatWidget() {
   }
 }
 
-/** ルート遷移時にアイコンを現在のページのものへ更新 */
+/** ルート遷移時にアイコンを現在のページのものへ更新（onerror を再武装して安定表示） */
 export function refreshChatWidgetIcon() {
   if (!root) return;
-  const url = mashIconUrl();
-  root.querySelectorAll(".chat-fab-icon, .chat-head-icon").forEach((img) => {
-    img.src = url;
+  root.querySelectorAll(".chat-fab-icon").forEach((img) => {
+    applyMashIcon(img);
   });
 }

@@ -15,6 +15,7 @@ import { navigate } from "../app.js";
 import { escapeHtml, toast } from "../utils.js";
 import { renderMarkdown } from "../lib/markdown.js";
 import { createMashBubble } from "../components/mash.js";
+import { createHelpButton } from "../components/helpModal.js";
 import { completeStepWithFeedback } from "../services/progress.js";
 
 export async function renderFeedback(root, curriculumId, stepId) {
@@ -58,6 +59,7 @@ export async function renderFeedback(root, curriculumId, stepId) {
           placeholder="マシュからのフィードバックをここに貼り付け"></textarea>
         <div class="feedback-actions" style="margin-top:14px">
           <button class="btn btn-primary" id="upload">⬆️ アップロード</button>
+          <span class="help-slot" id="fb-help"></span>
         </div>
       </section>
 
@@ -78,6 +80,8 @@ export async function renderFeedback(root, curriculumId, stepId) {
       }
     </div>
   `;
+
+  root.querySelector("#fb-help")?.appendChild(createHelpButton("feedback"));
 
   root.querySelector("#back").addEventListener("click", () =>
     navigate(

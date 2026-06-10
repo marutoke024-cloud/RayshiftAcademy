@@ -16,6 +16,7 @@ import { escapeHtml, toast } from "../utils.js";
 import { renderMarkdown } from "../lib/markdown.js";
 import { removeSection, composeNote, downloadText } from "../lib/stepDoc.js";
 import { saveUnderstandingNote } from "../services/progress.js";
+import { createHelpButton } from "../components/helpModal.js";
 
 const MEMO_HEADING = "一口メモ";
 const CLAUDE_URL = "https://claude.ai/new";
@@ -96,6 +97,7 @@ export async function renderRecall(root, curriculumId, stepId) {
       </section>
 
       <div class="recall-actions">
+        <span class="help-slot" id="recall-help"></span>
         <button class="btn btn-ghost" id="export-md">💾 md エクスポート</button>
         <button class="btn btn-ghost" id="to-claude">🤖 Claude へ（コピーして開く）</button>
         <button class="btn btn-primary" id="to-feedback">フィードバックを貼り付ける →</button>
@@ -148,6 +150,8 @@ export async function renderRecall(root, curriculumId, stepId) {
     }
     return { note, mdDoc };
   }
+
+  root.querySelector("#recall-help")?.appendChild(createHelpButton("notes"));
 
   root.querySelector("#export-md").addEventListener("click", () => doExport(true));
 

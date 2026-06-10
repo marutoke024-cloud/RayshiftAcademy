@@ -17,6 +17,7 @@ import { renderMarkdown } from "../lib/markdown.js";
 import { parseFrontmatter } from "../lib/frontmatter.js";
 import { splitLessonSections } from "../lib/lessonDoc.js";
 import { createMashBubble } from "../components/mash.js";
+import { createHelpButton } from "../components/helpModal.js";
 import { mashIconUrl, iconOnerrorAttr } from "../lib/mashIcon.js";
 import {
   listLessons,
@@ -51,6 +52,7 @@ async function renderLessonList(root) {
         <div class="nav-group">
           <button class="btn btn-ghost" id="phrasebank">📚 Phrase Bank</button>
           <button class="btn btn-primary" id="import">＋ Import Lesson</button>
+          <span class="help-slot" id="eng-help"></span>
         </div>
       </div>
       <header class="page-head">
@@ -71,6 +73,7 @@ async function renderLessonList(root) {
   root
     .querySelector("#import")
     .addEventListener("click", () => openImportDialog(root));
+  root.querySelector("#eng-help")?.appendChild(createHelpButton("english"));
 
   const [lessons, phrases] = await Promise.all([listLessons(), listPhrases()]);
 
@@ -282,7 +285,7 @@ function buildLessonHTML(bodyMd) {
 
 function mashColumnHTML(label, body) {
   return `<div class="lesson-mash">
-    <img class="lesson-mash-icon" src="${mashIconUrl()}" alt="マシュ"
+    <img class="lesson-mash-icon" src="${mashIconUrl()}" alt="Mash"
       onerror="${iconOnerrorAttr()}" />
     <div class="lesson-mash-bubble">
       <div class="lesson-mash-label">${escapeHtml(label)}</div>
