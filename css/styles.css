@@ -2192,6 +2192,437 @@ input[type="text"].field-input:focus {
   }
 }
 
+/* =====================================================================
+   Design Refinement Layer — Awwwards polish
+   （仕様・クラス名・カラースキームは不変。背景は白固定。
+     エントランス/マイクロアニメーション、深度のあるシャドウ、
+     タイポグラフィ調整のみを上書きで適用）
+   ===================================================================== */
+
+:root {
+  /* モーション */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);       /* easeOutQuint 風 */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* 弾み */
+  --dur-1: 0.35s;
+  --dur-2: 0.6s;
+  /* 多層シャドウ（紫みのある柔らかい深度） */
+  --shadow: 0 1px 2px rgba(60, 40, 100, 0.05), 0 4px 12px rgba(60, 40, 100, 0.07);
+  --shadow-lg: 0 2px 6px rgba(60, 40, 100, 0.07), 0 12px 32px rgba(60, 40, 100, 0.13),
+    0 24px 64px rgba(60, 40, 100, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection {
+  background: var(--primary-soft-2);
+  color: var(--primary-darker);
+}
+
+/* ---------- エントランス（ルート描画ごとに発火＝ページ遷移演出） ---------- */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeScaleIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.app-main > * > * {
+  animation: riseIn var(--dur-2) var(--ease-out) backwards;
+}
+/* 子要素を時差で立ち上げる（最初の 8 要素まで） */
+.app-main > * > *:nth-child(1) { animation-delay: 0.02s; }
+.app-main > * > *:nth-child(2) { animation-delay: 0.07s; }
+.app-main > * > *:nth-child(3) { animation-delay: 0.12s; }
+.app-main > * > *:nth-child(4) { animation-delay: 0.17s; }
+.app-main > * > *:nth-child(5) { animation-delay: 0.22s; }
+.app-main > * > *:nth-child(6) { animation-delay: 0.27s; }
+.app-main > * > *:nth-child(7) { animation-delay: 0.32s; }
+.app-main > * > *:nth-child(8) { animation-delay: 0.37s; }
+
+/* 本棚・グリッドのカードはさらに時差を細かく */
+.bookshelf > *,
+.tips-grid > *,
+.lesson-grid > *,
+.step-list > * {
+  animation: fadeScaleIn var(--dur-2) var(--ease-out) backwards;
+}
+.bookshelf > *:nth-child(1), .tips-grid > *:nth-child(1), .lesson-grid > *:nth-child(1), .step-list > *:nth-child(1) { animation-delay: 0.05s; }
+.bookshelf > *:nth-child(2), .tips-grid > *:nth-child(2), .lesson-grid > *:nth-child(2), .step-list > *:nth-child(2) { animation-delay: 0.1s; }
+.bookshelf > *:nth-child(3), .tips-grid > *:nth-child(3), .lesson-grid > *:nth-child(3), .step-list > *:nth-child(3) { animation-delay: 0.15s; }
+.bookshelf > *:nth-child(4), .tips-grid > *:nth-child(4), .lesson-grid > *:nth-child(4), .step-list > *:nth-child(4) { animation-delay: 0.2s; }
+.bookshelf > *:nth-child(5), .tips-grid > *:nth-child(5), .lesson-grid > *:nth-child(5), .step-list > *:nth-child(5) { animation-delay: 0.25s; }
+.bookshelf > *:nth-child(6), .tips-grid > *:nth-child(6), .lesson-grid > *:nth-child(6), .step-list > *:nth-child(6) { animation-delay: 0.3s; }
+.bookshelf > *:nth-child(7), .tips-grid > *:nth-child(7), .lesson-grid > *:nth-child(7), .step-list > *:nth-child(7) { animation-delay: 0.35s; }
+.bookshelf > *:nth-child(8), .tips-grid > *:nth-child(8), .lesson-grid > *:nth-child(8), .step-list > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* ---------- ヘッダー ---------- */
+.app-header {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background:
+    linear-gradient(120deg, rgba(107, 79, 160, 0.96), rgba(139, 107, 193, 0.96));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 8px 28px rgba(60, 40, 100, 0.25);
+}
+.brand-name {
+  letter-spacing: 0.12em;
+  transition: letter-spacing var(--dur-1) var(--ease-out);
+}
+.brand:hover .brand-name {
+  letter-spacing: 0.16em;
+}
+.brand-logo {
+  transition: transform var(--dur-1) var(--ease-spring), box-shadow var(--dur-1) var(--ease-out);
+}
+.brand:hover .brand-logo {
+  transform: rotate(-6deg) scale(1.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+/* ナビリンク: 下線がスライドイン */
+.header-link {
+  position: relative;
+  overflow: hidden;
+  transition: background var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+.header-link::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 5px;
+  height: 1.5px;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-1) var(--ease-out);
+}
+.header-link:hover {
+  transform: translateY(-1px);
+}
+.header-link:hover::after {
+  transform: scaleX(1);
+}
+.header-sync {
+  transition: background var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-spring);
+}
+.header-sync:hover {
+  transform: rotate(0.001deg) translateY(-1px);
+}
+.header-sync:active {
+  transform: scale(0.94);
+}
+
+/* ---------- カード（共通の深度・ホバー浮遊） ---------- */
+.card,
+.curriculum-card,
+.tip-card,
+.lesson-card,
+.step-row,
+.phrase-item,
+.archive-item {
+  border-color: rgba(203, 191, 232, 0.55);
+  transition: transform var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+  will-change: transform;
+}
+.curriculum-card:hover,
+.lesson-card:hover,
+.tip-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
+}
+.step-row.clickable:hover {
+  transform: translateX(6px);
+  border-color: var(--primary);
+}
+/* カード上端のアクセントライン（ホバーで点灯） */
+.curriculum-card,
+.lesson-card,
+.tip-card {
+  position: relative;
+  overflow: hidden;
+}
+.curriculum-card::before,
+.lesson-card::before,
+.tip-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light), var(--primary-soft-2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.curriculum-card:hover::before,
+.lesson-card:hover::before,
+.tip-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* ---------- 見出し ---------- */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--primary-soft-2), transparent);
+}
+.page-title,
+.detail-title,
+.flow-steptitle {
+  letter-spacing: 0.01em;
+  background: linear-gradient(120deg, var(--text), var(--primary-strong));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ---------- ボタン ---------- */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-1) var(--ease-spring),
+    box-shadow var(--dur-1) var(--ease-out),
+    background var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out);
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  box-shadow: 0 2px 10px rgba(107, 79, 160, 0.35);
+}
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--primary-strong), var(--primary));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(107, 79, 160, 0.45);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 8px rgba(107, 79, 160, 0.35);
+}
+/* 光のスイープ */
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.55s var(--ease-out);
+  pointer-events: none;
+}
+.btn-primary:hover::after {
+  left: 130%;
+}
+.btn-ghost:hover {
+  transform: translateY(-1.5px);
+  box-shadow: var(--shadow);
+}
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* ---------- 進捗バー ---------- */
+.progress-bar {
+  background: var(--primary-soft);
+}
+.progress-fill {
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  position: relative;
+  overflow: hidden;
+  transition: width 0.9s var(--ease-out);
+}
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(220%); }
+}
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  animation: shimmer 2.4s var(--ease-out) infinite;
+}
+
+/* ---------- チップ・タグ ---------- */
+.tag,
+.chip,
+.status-pill,
+.title-badge,
+.filter-chip {
+  transition: transform var(--dur-1) var(--ease-spring),
+    background var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-1) var(--ease-out);
+}
+.tag:hover,
+.title-badge:hover,
+.filter-chip:hover {
+  transform: translateY(-2px);
+}
+.filter-chip.is-active {
+  box-shadow: 0 4px 14px rgba(107, 79, 160, 0.35);
+}
+.title-badge-gold {
+  background: linear-gradient(120deg, var(--primary-soft), #f4ecff);
+  box-shadow: 0 1px 0 #fff inset, 0 3px 10px rgba(107, 79, 160, 0.12);
+}
+
+/* ---------- マシュ吹き出し ---------- */
+.mash-bubble .mash-avatar,
+.mash-comment-icon,
+.lesson-mash-icon {
+  transition: transform var(--dur-1) var(--ease-spring);
+}
+.mash-bubble:hover .mash-avatar,
+.mash-comment:hover .mash-comment-icon,
+.lesson-mash:hover .lesson-mash-icon {
+  transform: scale(1.07) rotate(-3deg);
+}
+.mash-speech,
+.mash-comment-text,
+.lesson-mash-bubble {
+  background: linear-gradient(160deg, #f3edfb, var(--primary-soft));
+  box-shadow: 0 2px 10px rgba(107, 79, 160, 0.08);
+}
+
+/* ---------- インポートドロップゾーン ---------- */
+.import-dropzone {
+  transition: border-color var(--dur-1) var(--ease-out),
+    background var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+.import-dropzone:hover {
+  transform: translateY(-2px);
+}
+.import-dropzone.dragover {
+  transform: scale(1.012);
+  box-shadow: 0 0 0 4px var(--primary-soft);
+}
+.import-icon {
+  display: inline-block;
+  transition: transform var(--dur-1) var(--ease-spring);
+}
+.import-dropzone:hover .import-icon {
+  transform: translateY(-4px) scale(1.12);
+}
+
+/* ---------- チャット小窓 ---------- */
+@keyframes fabPulse {
+  0% { box-shadow: 0 6px 18px rgba(60, 40, 100, 0.4), 0 0 0 0 rgba(139, 107, 193, 0.45); }
+  70% { box-shadow: 0 6px 18px rgba(60, 40, 100, 0.4), 0 0 0 16px rgba(139, 107, 193, 0); }
+  100% { box-shadow: 0 6px 18px rgba(60, 40, 100, 0.4), 0 0 0 0 rgba(139, 107, 193, 0); }
+}
+.chat-fab {
+  animation: fabPulse 3.2s var(--ease-out) infinite;
+  transition: transform var(--dur-1) var(--ease-spring);
+}
+.chat-fab:hover {
+  animation-play-state: paused;
+}
+.chat-panel {
+  animation: fadeScaleIn 0.32s var(--ease-spring) backwards;
+  transform-origin: bottom right;
+}
+.chat-msg {
+  animation: riseIn 0.3s var(--ease-out) backwards;
+}
+.chat-result {
+  transition: transform var(--dur-1) var(--ease-out), background var(--dur-1) var(--ease-out);
+}
+.chat-result:hover {
+  transform: translateX(4px);
+}
+
+/* ---------- モーダル ---------- */
+.form-modal,
+.crop-modal,
+.unlock-card,
+.img-modal {
+  animation: fadeScaleIn 0.34s var(--ease-spring) backwards;
+}
+.help-phrase {
+  transition: transform var(--dur-1) var(--ease-out), outline-color var(--dur-1) var(--ease-out);
+}
+.help-phrase:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------- 解錠演出を強化 ---------- */
+.unlock-overlay {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.unlock-card .unlock-emoji {
+  display: inline-block;
+}
+
+/* ---------- フォーカスリング（アクセシビリティ） ---------- */
+.btn:focus-visible,
+.header-link:focus-visible,
+.filter-chip:focus-visible,
+.help-btn-inline:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- sticky 学習ヘッダー ---------- */
+.learn-sticky {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 10px 30px rgba(60, 40, 100, 0.08);
+}
+
+/* ---------- 動きを抑えたい環境では無効化 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* 小さい画面では小窓を画面幅に合わせる */
 @media (max-width: 430px) {
   #mash-chat {
