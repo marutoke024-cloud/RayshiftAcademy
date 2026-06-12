@@ -13,6 +13,36 @@
         "5500"
       ],
       "port": 5500
+    },
+    {
+      "name": "polaris",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "tools/serve.ps1",
+        "-Port",
+        "5510",
+        "-Root",
+        "career-compass"
+      ],
+      "port": 5510
+    },
+    {
+      "name": "axonom",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "tools/serve.ps1",
+        "-Port",
+        "5520",
+        "-Root",
+        "axonom"
+      ],
+      "port": 5520
     }
   ]
 }

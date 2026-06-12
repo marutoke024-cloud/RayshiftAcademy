@@ -1,4 +1,4 @@
-# =====================================================================
+﻿# =====================================================================
 # 依存ゼロの簡易静的サーバー（Windows PowerShell 用）
 # ---------------------------------------------------------------------
 # Node.js も Python も無くても、このスクリプトだけでローカル確認できます。
@@ -12,10 +12,15 @@
 # =====================================================================
 
 param(
-  [int]$Port = 5500
+  [int]$Port = 5500,
+  [string]$Root = ""   # 配信ルートの上書き（プロジェクトルートからの相対 or 絶対）
 )
 
 $ErrorActionPreference = "Stop"
+
+# PowerShell の変数名は大文字小文字を区別しないため、後続の $root 代入で
+# param の $Root が潰される。先に退避しておく。
+$rootOverride = $Root
 
 # 配信ルート = このスクリプトの 1 つ上（プロジェクトルート）
 # $PSScriptRoot が空になる起動方法（ランチャー経由など）にも対応してフォールバック
@@ -29,6 +34,11 @@ if ($scriptDir) {
   $root = (Get-Location).Path
 }
 if (-not $root) { $root = (Get-Location).Path }
+# -Root 指定があればそちらを優先（相対ならプロジェクトルート基準）
+if ($rootOverride) {
+  if ([System.IO.Path]::IsPathRooted($rootOverride)) { $root = $rootOverride }
+  else { $root = Join-Path $root $rootOverride }
+}
 Write-Host "解決した配信ルート: $root"
 
 $mime = @{

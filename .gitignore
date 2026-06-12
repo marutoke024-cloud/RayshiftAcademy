@@ -8,3 +8,9 @@ Thumbs.db
 
 # Dependencies (not used in this no-build project, kept for safety)
 node_modules/
+
+# POLARIS（career-compass）は独立リポジトリとして別GitHubで管理するため除外
+career-compass/
+
+# AXONOM（DCフロアマップ）は独立リポジトリ（marutoke024-cloud/AXONOM）で管理するため除外
+axonom/

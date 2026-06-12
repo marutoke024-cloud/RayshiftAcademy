@@ -18,7 +18,8 @@
       "Bash(findstr /C:\"status\" /C:\"created\" /C:\"updated\")",
       "Bash(curl -s \"https://marutoke024-cloud.github.io/RayshiftAcademy/css/styles.css\")",
       "Bash(findstr /N \"section-divider border-top height:\")",
-      "Bash(curl -s https://marutoke024-cloud.github.io/RayshiftAcademy/css/styles.css?nocache=__TRACKED_VAR__)"
+      "Bash(curl -s https://marutoke024-cloud.github.io/RayshiftAcademy/css/styles.css?nocache=__TRACKED_VAR__)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"C:\\\\Users\\\\煮込みカプチーノ\\\\OneDrive\\\\画像\\\\カメラ ロール\\\\ebook\\\\8.png\"\\); \"$\\($img.Width\\) x $\\($img.Height\\)\"; $img.Dispose\\(\\))"
     ]
   }
 }
