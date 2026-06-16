@@ -4,9 +4,9 @@
 // 画像は Storage（assets/tips/{tipId}/...）、メタは tips コレクションへ。
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { uid } from "../utils.js";
-import { shrinkImage } from "../lib/media.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { uid } from "../utils.js?v=20260610c";
+import { shrinkImage } from "../lib/media.js?v=20260610c";
 
 export const TIP_CATEGORIES = [
   "線画",

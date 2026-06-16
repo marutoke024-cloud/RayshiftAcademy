@@ -14,7 +14,7 @@
 //   ### From Mash
 // =====================================================================
 
-import { parseFrontmatter } from "./frontmatter.js";
+import { parseFrontmatter } from "./frontmatter.js?v=20260610c";
 
 /** 本文を見出し（## / ###）単位のセクションに分割（外部公開） */
 export function splitLessonSections(content) {

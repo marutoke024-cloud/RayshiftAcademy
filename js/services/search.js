@@ -6,7 +6,7 @@
 // 各コレクションの読み取りは失敗しても全体は止めない（Firestore 未設定でも動く）。
 // =====================================================================
 
-import { store } from "../storage/store.js";
+import { store } from "../storage/store.js?v=20260610c";
 
 /**
  * @returns {Promise<{type, id, title, snippet, href}[]>}

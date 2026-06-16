@@ -10,15 +10,15 @@
 //   - ヒットなし時のみ mash_icon_sad.png を表示
 // =====================================================================
 
-import { navigate } from "../app.js";
-import { escapeHtml } from "../utils.js";
-import { searchAll } from "../services/search.js";
+import { navigate } from "../app.js?v=20260610c";
+import { escapeHtml } from "../utils.js?v=20260610c";
+import { searchAll } from "../services/search.js?v=20260610c";
 import {
   mashIconUrl,
   mashSadUrl,
   iconOnerrorAttr,
   applyMashIcon,
-} from "../lib/mashIcon.js";
+} from "../lib/mashIcon.js?v=20260610c";
 
 const REPLY_HIT = [
   "見つけましたよ、先輩！",

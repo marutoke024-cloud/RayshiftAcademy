@@ -4,9 +4,9 @@
 // 学習フローの状態遷移ロジックを 1 か所に集約します。
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { buildExportMd } from "../lib/stepDoc.js";
-import { todayISO } from "../utils.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { buildExportMd } from "../lib/stepDoc.js?v=20260610c";
+import { todayISO } from "../utils.js?v=20260610c";
 
 /** mode に応じた 1 ステップあたりの mastery 獲得量 */
 function masteryGainFor(curriculum, step) {

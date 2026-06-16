@@ -7,8 +7,8 @@
 //   - 称号はトップ画面に表示・（Firebase 有効時に）記録
 // =====================================================================
 
-import { completedCurricula } from "./library.js";
-import { store } from "../storage/store.js";
+import { completedCurricula } from "./library.js?v=20260610c";
+import { store } from "../storage/store.js?v=20260610c";
 
 // 完了数に応じた上位称号のしきい値
 const OVERALL_TIERS = [

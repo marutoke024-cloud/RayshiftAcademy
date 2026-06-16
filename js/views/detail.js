@@ -7,11 +7,11 @@
 //   - 進捗バー
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { escapeHtml, statusLabel, toast } from "../utils.js";
-import { navigate } from "../app.js";
-import { renderMarkdown } from "../lib/markdown.js";
-import { applyMasteryBadge } from "../components/masteryBadge.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { escapeHtml, statusLabel, toast } from "../utils.js?v=20260610c";
+import { navigate } from "../app.js?v=20260610c";
+import { renderMarkdown } from "../lib/markdown.js?v=20260610c";
+import { applyMasteryBadge } from "../components/masteryBadge.js?v=20260610c";
 
 export async function renderCurriculumDetail(root, curriculumId) {
   const c = await store.getCurriculum(curriculumId);

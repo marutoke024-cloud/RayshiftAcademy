@@ -7,10 +7,10 @@
 //   - 「次のステップ」ボタンでランダムに次を表示
 // =====================================================================
 
-import { navigate } from "../app.js";
-import { getLibrary, allCompletedSteps } from "../services/library.js";
-import { createReviewBlock } from "../components/reviewBlock.js";
-import { createMashBubble } from "../components/mash.js";
+import { navigate } from "../app.js?v=20260610c";
+import { getLibrary, allCompletedSteps } from "../services/library.js?v=20260610c";
+import { createReviewBlock } from "../components/reviewBlock.js?v=20260610c";
+import { createMashBubble } from "../components/mash.js?v=20260610c";
 
 export async function renderMixReview(root) {
   const library = await getLibrary();

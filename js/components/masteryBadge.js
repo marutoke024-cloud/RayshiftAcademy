@@ -5,8 +5,8 @@
 // utils.masteryBadgeSVG の SVG を表示します。
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { masteryBadgeSVG } from "../utils.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { masteryBadgeSVG } from "../utils.js?v=20260610c";
 
 // バッジ画像 URL のキャッシュ（mastery レベル → url|null）
 const badgeCache = new Map();

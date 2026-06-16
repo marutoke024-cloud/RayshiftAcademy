@@ -6,19 +6,19 @@
 //   #/curriculum/:id        → カリキュラム詳細
 // =====================================================================
 
-import { store } from "./storage/store.js";
-import { deviceClass, toast } from "./utils.js";
-import { renderHome } from "./views/home.js";
-import { renderCurriculumDetail } from "./views/detail.js";
-import { renderLearn } from "./views/learn.js";
-import { renderRecall } from "./views/recall.js";
-import { renderFeedback } from "./views/feedback.js";
-import { renderReview } from "./views/review.js";
-import { renderMixReview } from "./views/mixReview.js";
-import { renderDesignCourse } from "./views/designCourse.js";
-import { renderEnglishClass } from "./views/englishClass.js";
-import { mountChatWidget } from "./components/chatWidget.js";
-import { mashLogoUrl, iconOnerrorAttr } from "./lib/mashIcon.js";
+import { store } from "./storage/store.js?v=20260610c";
+import { deviceClass, toast } from "./utils.js?v=20260610c";
+import { renderHome } from "./views/home.js?v=20260610c";
+import { renderCurriculumDetail } from "./views/detail.js?v=20260610c";
+import { renderLearn } from "./views/learn.js?v=20260610c";
+import { renderRecall } from "./views/recall.js?v=20260610c";
+import { renderFeedback } from "./views/feedback.js?v=20260610c";
+import { renderReview } from "./views/review.js?v=20260610c";
+import { renderMixReview } from "./views/mixReview.js?v=20260610c";
+import { renderDesignCourse } from "./views/designCourse.js?v=20260610c";
+import { renderEnglishClass } from "./views/englishClass.js?v=20260610c";
+import { mountChatWidget } from "./components/chatWidget.js?v=20260610c";
+import { mashLogoUrl, iconOnerrorAttr } from "./lib/mashIcon.js?v=20260610c";
 
 const appRoot = () => document.getElementById("app");
 

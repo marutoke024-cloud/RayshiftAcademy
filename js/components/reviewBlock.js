@@ -8,8 +8,8 @@
 //   - 成長記録（初回と最新の比較）
 // =====================================================================
 
-import { escapeHtml } from "../utils.js";
-import { renderMarkdown } from "../lib/markdown.js";
+import { escapeHtml } from "../utils.js?v=20260610c";
+import { renderMarkdown } from "../lib/markdown.js?v=20260610c";
 
 /**
  * @param {object} curriculum

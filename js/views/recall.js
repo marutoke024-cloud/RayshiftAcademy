@@ -10,13 +10,13 @@
 //   - 「フィードバックへ」へ進むボタン
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { navigate } from "../app.js";
-import { escapeHtml, toast } from "../utils.js";
-import { renderMarkdown } from "../lib/markdown.js";
-import { removeSection, composeNote, downloadText } from "../lib/stepDoc.js";
-import { saveUnderstandingNote } from "../services/progress.js";
-import { createHelpButton } from "../components/helpModal.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { navigate } from "../app.js?v=20260610c";
+import { escapeHtml, toast } from "../utils.js?v=20260610c";
+import { renderMarkdown } from "../lib/markdown.js?v=20260610c";
+import { removeSection, composeNote, downloadText } from "../lib/stepDoc.js?v=20260610c";
+import { saveUnderstandingNote } from "../services/progress.js?v=20260610c";
+import { createHelpButton } from "../components/helpModal.js?v=20260610c";
 
 const MEMO_HEADING = "一口メモ";
 const CLAUDE_URL = "https://claude.ai/new";

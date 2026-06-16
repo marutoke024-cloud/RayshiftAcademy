@@ -7,10 +7,10 @@
 //   - 成長記録（初回と最新の比較）
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { navigate } from "../app.js";
-import { escapeHtml, statusLabel } from "../utils.js";
-import { createReviewBlock } from "../components/reviewBlock.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { navigate } from "../app.js?v=20260610c";
+import { escapeHtml, statusLabel } from "../utils.js?v=20260610c";
+import { createReviewBlock } from "../components/reviewBlock.js?v=20260610c";
 
 export async function renderReview(root, curriculumId) {
   const curriculum = await store.getCurriculum(curriculumId);

@@ -6,7 +6,7 @@
 //   2. 完了済みの中で mastery_gained が低いステップ（復習向き）
 // =====================================================================
 
-import { inProgressSteps, allCompletedSteps } from "./library.js";
+import { inProgressSteps, allCompletedSteps } from "./library.js?v=20260610c";
 
 /**
  * @returns {null | {curriculum, step, reason: "next"|"review"}}

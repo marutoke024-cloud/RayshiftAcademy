@@ -8,9 +8,9 @@
 //   - 既存データとの差分更新（進捗・理解メモ・フィードバックは保持）
 // =====================================================================
 
-import { parseFrontmatter } from "../lib/frontmatter.js";
-import { store } from "../storage/store.js";
-import { slugify } from "../utils.js";
+import { parseFrontmatter } from "../lib/frontmatter.js?v=20260610c";
+import { store } from "../storage/store.js?v=20260610c";
+import { slugify } from "../utils.js?v=20260610c";
 
 const IMAGE_EXT = /\.(png|jpe?g|gif|webp|svg)$/i;
 const MD_EXT = /\.md$/i;

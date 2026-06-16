@@ -10,12 +10,12 @@
 //   - 全デバイスで編集・追加可能
 // =====================================================================
 
-import { navigate } from "../app.js";
-import { escapeHtml, toast } from "../utils.js";
-import { createMashBubble } from "../components/mash.js";
-import { fileToDataURL, openImageModal } from "../lib/media.js";
-import { openCropModal } from "../components/cropModal.js";
-import { createHelpButton } from "../components/helpModal.js";
+import { navigate } from "../app.js?v=20260610c";
+import { escapeHtml, toast } from "../utils.js?v=20260610c";
+import { createMashBubble } from "../components/mash.js?v=20260610c";
+import { fileToDataURL, openImageModal } from "../lib/media.js?v=20260610c";
+import { openCropModal } from "../components/cropModal.js?v=20260610c";
+import { createHelpButton } from "../components/helpModal.js?v=20260610c";
 import {
   TIP_CATEGORIES,
   listTips,
@@ -23,7 +23,7 @@ import {
   deleteTip,
   resolveTipImages,
   pickDailyTip,
-} from "../services/tips.js";
+} from "../services/tips.js?v=20260610c";
 
 let activeCategory = ""; // "" = すべて
 

@@ -5,9 +5,9 @@
 //  - phrase_bank コレクション: 登録フレーズ（登録元レッスン ID 付き）
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { uid } from "../utils.js";
-import { parseLesson } from "../lib/lessonDoc.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { uid } from "../utils.js?v=20260610c";
+import { parseLesson } from "../lib/lessonDoc.js?v=20260610c";
 
 const LESSONS = "english_lessons";
 const PHRASES = "phrase_bank";

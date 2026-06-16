@@ -4,9 +4,9 @@
 // 優先順: インポートされた mash_sd.png > 同梱の ./assets/mash_bg.jpg。
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { escapeHtml } from "../utils.js";
-import { mashIconUrl, MASH_FALLBACK } from "../lib/mashIcon.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { escapeHtml } from "../utils.js?v=20260610c";
+import { mashIconUrl, MASH_FALLBACK } from "../lib/mashIcon.js?v=20260610c";
 
 let cachedMashUrl;
 

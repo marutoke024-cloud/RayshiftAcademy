@@ -5,7 +5,7 @@
 // モーダルで表示する。topic ごとに内容を定義。
 // =====================================================================
 
-import { toast } from "../utils.js";
+import { toast } from "../utils.js?v=20260610c";
 
 // 各トピックの内容。block 種別: p（段落）/ phrase（合言葉・コピー可）/ steps（手順）/ h（小見出し）
 const TOPICS = {

@@ -6,9 +6,9 @@
 // （= 保存先が IndexedDB でも Firebase でも、呼び出し側は変えなくてよい）
 // =====================================================================
 
-import { USE_FIREBASE } from "../config/firebase-config.js";
-import { localBackend } from "./localBackend.js";
-import { firebaseBackend } from "./firebaseBackend.js";
+import { USE_FIREBASE } from "../config/firebase-config.js?v=20260610c";
+import { localBackend } from "./localBackend.js?v=20260610c";
+import { firebaseBackend } from "./firebaseBackend.js?v=20260610c";
 
 const backend = USE_FIREBASE ? firebaseBackend : localBackend;
 

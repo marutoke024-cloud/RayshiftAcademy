@@ -9,9 +9,9 @@ import {
   collectFromDataTransfer,
   collectFromFileList,
   importFiles,
-} from "../import/importer.js";
-import { toast } from "../utils.js";
-import { createHelpButton } from "./helpModal.js";
+} from "../import/importer.js?v=20260610c";
+import { toast } from "../utils.js?v=20260610c";
+import { createHelpButton } from "./helpModal.js?v=20260610c";
 
 /**
  * @param {() => void} onImported インポート完了後に呼ばれる（一覧再描画など）

@@ -5,7 +5,7 @@
 // 各機能が共通で使う集計を提供します。
 // =====================================================================
 
-import { store } from "../storage/store.js";
+import { store } from "../storage/store.js?v=20260610c";
 
 /** [{curriculum, steps}] を返す（steps は step 番号順） */
 export async function getLibrary() {

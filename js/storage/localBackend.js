@@ -6,7 +6,7 @@
 // 寄せています。
 // =====================================================================
 
-import { idb, STORES } from "../lib/idb.js";
+import { idb, STORES } from "../lib/idb.js?v=20260610c";
 
 function stepKey(curriculumId, stepId) {
   return `${curriculumId}/${stepId}`;

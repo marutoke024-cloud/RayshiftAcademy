@@ -11,14 +11,14 @@
 //   - Editable / addable on all devices
 // =====================================================================
 
-import { navigate } from "../app.js";
-import { escapeHtml, toast } from "../utils.js";
-import { renderMarkdown } from "../lib/markdown.js";
-import { parseFrontmatter } from "../lib/frontmatter.js";
-import { splitLessonSections } from "../lib/lessonDoc.js";
-import { createMashBubble } from "../components/mash.js";
-import { createHelpButton } from "../components/helpModal.js";
-import { mashIconUrl, iconOnerrorAttr } from "../lib/mashIcon.js";
+import { navigate } from "../app.js?v=20260610c";
+import { escapeHtml, toast } from "../utils.js?v=20260610c";
+import { renderMarkdown } from "../lib/markdown.js?v=20260610c";
+import { parseFrontmatter } from "../lib/frontmatter.js?v=20260610c";
+import { splitLessonSections } from "../lib/lessonDoc.js?v=20260610c";
+import { createMashBubble } from "../components/mash.js?v=20260610c";
+import { createHelpButton } from "../components/helpModal.js?v=20260610c";
+import { mashIconUrl, iconOnerrorAttr } from "../lib/mashIcon.js?v=20260610c";
 import {
   listLessons,
   getLesson,
@@ -29,7 +29,7 @@ import {
   addPhrase,
   deletePhrase,
   pickDailyPhrase,
-} from "../services/english.js";
+} from "../services/english.js?v=20260610c";
 
 export async function renderEnglishClass(root, parts = []) {
   if (parts[0] === "lesson" && parts[1]) {

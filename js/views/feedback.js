@@ -10,13 +10,13 @@
 //   - 解錠演出（マシュ SD イラスト＋称賛メッセージ）
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { navigate } from "../app.js";
-import { escapeHtml, toast } from "../utils.js";
-import { renderMarkdown } from "../lib/markdown.js";
-import { createMashBubble } from "../components/mash.js";
-import { createHelpButton } from "../components/helpModal.js";
-import { completeStepWithFeedback } from "../services/progress.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { navigate } from "../app.js?v=20260610c";
+import { escapeHtml, toast } from "../utils.js?v=20260610c";
+import { renderMarkdown } from "../lib/markdown.js?v=20260610c";
+import { createMashBubble } from "../components/mash.js?v=20260610c";
+import { createHelpButton } from "../components/helpModal.js?v=20260610c";
+import { completeStepWithFeedback } from "../services/progress.js?v=20260610c";
 
 export async function renderFeedback(root, curriculumId, stepId) {
   const curriculum = await store.getCurriculum(curriculumId);

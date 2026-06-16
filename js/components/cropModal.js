@@ -5,7 +5,7 @@
 // confirm で切り出した dataURL を resolve、cancel で null を resolve。
 // =====================================================================
 
-import { loadImage, cropSquare } from "../lib/media.js";
+import { loadImage, cropSquare } from "../lib/media.js?v=20260610c";
 
 const VP = 300; // ビューポート（正方形）px
 

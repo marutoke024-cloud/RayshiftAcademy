@@ -10,18 +10,18 @@
 //   - 「リコールページへ」ボタン
 // =====================================================================
 
-import { store } from "../storage/store.js";
-import { navigate } from "../app.js";
-import { escapeHtml, toast } from "../utils.js";
-import { renderMarkdown } from "../lib/markdown.js";
+import { store } from "../storage/store.js?v=20260610c";
+import { navigate } from "../app.js?v=20260610c";
+import { escapeHtml, toast } from "../utils.js?v=20260610c";
+import { renderMarkdown } from "../lib/markdown.js?v=20260610c";
 import {
   removeSection,
   getSectionBody,
   breakAfterPeriods,
   cleanMemoText,
-} from "../lib/stepDoc.js";
-import { createMashBubble } from "../components/mash.js";
-import { mashIconUrl, iconOnerrorAttr } from "../lib/mashIcon.js";
+} from "../lib/stepDoc.js?v=20260610c";
+import { createMashBubble } from "../components/mash.js?v=20260610c";
+import { mashIconUrl, iconOnerrorAttr } from "../lib/mashIcon.js?v=20260610c";
 
 const MEMO_HEADING = "一口メモ";
 

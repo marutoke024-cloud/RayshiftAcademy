@@ -9,15 +9,15 @@
 //   - md インポート（PC のみ）
 // =====================================================================
 
-import { createImportPanel } from "../components/importPanel.js";
-import { createMashBubble, resetMashImageCache } from "../components/mash.js";
-import { applyMasteryBadge, resetBadgeCache } from "../components/masteryBadge.js";
-import { escapeHtml, statusLabel } from "../utils.js";
-import { navigate } from "../app.js";
-import { getLibrary, allCompletedSteps } from "../services/library.js";
-import { pickTodaysStep } from "../services/recommend.js";
-import { computeTitles, persistTitles } from "../services/titles.js";
-import { createHelpButton } from "../components/helpModal.js";
+import { createImportPanel } from "../components/importPanel.js?v=20260610c";
+import { createMashBubble, resetMashImageCache } from "../components/mash.js?v=20260610c";
+import { applyMasteryBadge, resetBadgeCache } from "../components/masteryBadge.js?v=20260610c";
+import { escapeHtml, statusLabel } from "../utils.js?v=20260610c";
+import { navigate } from "../app.js?v=20260610c";
+import { getLibrary, allCompletedSteps } from "../services/library.js?v=20260610c";
+import { pickTodaysStep } from "../services/recommend.js?v=20260610c";
+import { computeTitles, persistTitles } from "../services/titles.js?v=20260610c";
+import { createHelpButton } from "../components/helpModal.js?v=20260610c";
 
 export async function renderHome(root) {
   root.innerHTML = `<div class="home"></div>`;

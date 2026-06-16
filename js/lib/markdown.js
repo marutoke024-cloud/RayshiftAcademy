@@ -5,7 +5,7 @@
 // marked が読み込めなかった場合は、最低限のフォールバック描画を行います。
 // =====================================================================
 
-import { escapeHtml } from "../utils.js";
+import { escapeHtml } from "../utils.js?v=20260610c";
 
 /** md 文字列を HTML 文字列に変換して返す */
 export function renderMarkdown(md) {

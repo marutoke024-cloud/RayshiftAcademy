@@ -17,7 +17,7 @@
 // （USE_FIREBASE が false のときは読み込まれません）
 // =====================================================================
 
-import { firebaseConfig, DEFAULT_USER_ID } from "../config/firebase-config.js";
+import { firebaseConfig, DEFAULT_USER_ID } from "../config/firebase-config.js?v=20260610c";
 
 const SDK = "https://www.gstatic.com/firebasejs/10.12.2";
 const uid = DEFAULT_USER_ID;
