@@ -2,34 +2,36 @@
 // マシュアイコン管理（ランダム表示）
 // ---------------------------------------------------------------------
 // 仕様:
-//   - mash_icon/mash01.png 〜 mash09.png の 9 種類
-//   - ページ（ルート）表示のたびにランダムで 1 枚を選択
-//   - そのページ内では全箇所同じ画像を使用（遷移ごとに切り替わる）
-//   - ヒットなし時のみ mash_icon_sad.png（チャット小窓用）
-//   - ロゴ（タイトル横・favicon）は mash_icon/mash_logo.png 固定
+//   - mash_icon/mash01.png 〜 mash09.png のうち、ランダムプールは
+//     mash03 を除く 8 種類（mash03 はチャットのヒットなし返答専用）。
+//   - mashIconUrl() は呼ばれるたびに独立してランダム選択するため、
+//     同じページ内でも「アイコン箇所ごと」に異なる絵柄になる。
+//   - ロゴ（タイトル横・favicon）は mash_icon/mash_logo.png 固定。
+//   - ヒットなし返答のときだけ mash03.png（mashSadUrl）。
 //
 // 注: 画像が見つからない場合は onerror で mash_logo.png に
 //     フォールバックして必ず表示できるようにする。
 // =====================================================================
 
 const FALLBACK = "./mash_icon/mash_logo.png";
-const COUNT = 9;
 
-let current = pickRandom();
+// ランダム表示プール（mash03 は「ヒットなし」専用なので除外）
+const POOL = [1, 2, 4, 5, 6, 7, 8, 9];
 
-function pickRandom() {
-  return Math.floor(Math.random() * COUNT) + 1;
+function iconPath(n) {
+  return `./mash_icon/mash${String(n).padStart(2, "0")}.png`;
 }
 
-/** ルート遷移ごとに呼び、アイコンを選び直す */
-export function rerollMashIcon() {
-  current = pickRandom();
-  return mashIconUrl();
-}
+/**
+ * 互換用。各箇所が独立ランダムになったため、ページ単位の選び直しは不要。
+ * （何もしない）
+ */
+export function rerollMashIcon() {}
 
-/** 現在のページの通常アイコン URL */
+/** 通常アイコン URL（呼ばれるたびにプールから独立ランダム選択） */
 export function mashIconUrl() {
-  return `./mash_icon/mash${String(current).padStart(2, "0")}.png`;
+  const n = POOL[Math.floor(Math.random() * POOL.length)];
+  return iconPath(n);
 }
 
 /** ロゴ（アプリアイコン・タイトル横）URL */
@@ -37,9 +39,9 @@ export function mashLogoUrl() {
   return "./mash_icon/mash_logo.png";
 }
 
-/** しょんぼりアイコン URL */
+/** ヒットなし返答専用アイコン URL（mash03） */
 export function mashSadUrl() {
-  return "./mash_icon/mash_sad.png";
+  return iconPath(3);
 }
 
 export const MASH_FALLBACK = FALLBACK;

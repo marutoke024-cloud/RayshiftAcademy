@@ -17,12 +17,8 @@ import { renderReview } from "./views/review.js";
 import { renderMixReview } from "./views/mixReview.js";
 import { renderDesignCourse } from "./views/designCourse.js";
 import { renderEnglishClass } from "./views/englishClass.js";
-import { mountChatWidget, refreshChatWidgetIcon } from "./components/chatWidget.js";
-import {
-  rerollMashIcon,
-  mashLogoUrl,
-  iconOnerrorAttr,
-} from "./lib/mashIcon.js";
+import { mountChatWidget } from "./components/chatWidget.js";
+import { mashLogoUrl, iconOnerrorAttr } from "./lib/mashIcon.js";
 
 const appRoot = () => document.getElementById("app");
 
@@ -47,10 +43,8 @@ async function route() {
   if (!root) return;
   const { parts } = parseHash();
 
-  // ページ遷移ごとにマシュアイコンを選び直す（ページ内は同一画像）
-  rerollMashIcon();
-  setupHeader();
-  refreshChatWidgetIcon();
+  // ヘッダーはロゴ固定・各アイコンは描画時に箇所ごと独立ランダムのため、
+  // ルート毎の一括リロールは不要（ヘッダーは boot で 1 度だけ構築）。
 
   try {
     if (parts.length === 0) {
