@@ -6,9 +6,9 @@
     <title>Rayshift Academy</title>
     <meta name="description" content="Obsidian カリキュラムで学ぶ個人向け e-learning アプリ" />
 
-    <!-- アプリアイコン / favicon（マシュ） -->
-    <link rel="icon" type="image/jpeg" href="./assets/mash_bg.jpg" />
-    <link rel="apple-touch-icon" href="./assets/mash_bg.jpg" />
+    <!-- アプリアイコン / favicon（ロゴ） -->
+    <link rel="icon" type="image/png" href="./mash_icon/mash_logo.png" />
+    <link rel="apple-touch-icon" href="./mash_icon/mash_logo.png" />
 
     <!-- Google Fonts: ロゴ用（Cinzel）＋本文補助（Raleway） -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,11 +18,28 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="./css/styles.css?v=20260610a" />
+    <link rel="stylesheet" href="./css/styles.css?v=20260610b" />
     <!-- md パーサー: marked.js（CDN） -->
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
   </head>
   <body>
+    <!-- スターティングアニメーション（ロゴ・スプラッシュ） -->
+    <div id="splash" class="splash" role="presentation">
+      <div class="splash-inner">
+        <div class="splash-logo-wrap">
+          <span class="splash-ring"></span>
+          <span class="splash-ring splash-ring-2"></span>
+          <img
+            class="splash-logo"
+            src="./mash_icon/mash_logo.png"
+            alt="Rayshift Academy"
+          />
+        </div>
+        <div class="splash-word">RAYSHIFT&nbsp;ACADEMY</div>
+        <div class="splash-bar"><span></span></div>
+      </div>
+    </div>
+
     <!-- 背景のマシュ（全ページ共通・固定・最背面） -->
     <div class="app-bg" aria-hidden="true"></div>
 

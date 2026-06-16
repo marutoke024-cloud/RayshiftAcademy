@@ -2,17 +2,18 @@
 // マシュアイコン管理（ランダム表示）
 // ---------------------------------------------------------------------
 // 仕様:
-//   - assets/mash_icon_01.png 〜 mash_icon_10.png の 10 種類
+//   - mash_icon/mash01.png 〜 mash09.png の 9 種類
 //   - ページ（ルート）表示のたびにランダムで 1 枚を選択
 //   - そのページ内では全箇所同じ画像を使用（遷移ごとに切り替わる）
 //   - ヒットなし時のみ mash_icon_sad.png（チャット小窓用）
+//   - ロゴ（タイトル横・favicon）は mash_icon/mash_logo.png 固定
 //
-// 注: 番号付き / sad 画像が未配置でも、onerror で mash_icon.png に
+// 注: 画像が見つからない場合は onerror で mash_logo.png に
 //     フォールバックして必ず表示できるようにする。
 // =====================================================================
 
-const FALLBACK = "./assets/mash_icon.png";
-const COUNT = 10;
+const FALLBACK = "./mash_icon/mash_logo.png";
+const COUNT = 9;
 
 let current = pickRandom();
 
@@ -28,12 +29,17 @@ export function rerollMashIcon() {
 
 /** 現在のページの通常アイコン URL */
 export function mashIconUrl() {
-  return `./assets/mash_icon_${String(current).padStart(2, "0")}.png`;
+  return `./mash_icon/mash${String(current).padStart(2, "0")}.png`;
+}
+
+/** ロゴ（アプリアイコン・タイトル横）URL */
+export function mashLogoUrl() {
+  return "./mash_icon/mash_logo.png";
 }
 
 /** しょんぼりアイコン URL */
 export function mashSadUrl() {
-  return "./assets/mash_icon_sad.png";
+  return "./mash_icon/mash_sad.png";
 }
 
 export const MASH_FALLBACK = FALLBACK;

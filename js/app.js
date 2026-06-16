@@ -18,7 +18,11 @@ import { renderMixReview } from "./views/mixReview.js";
 import { renderDesignCourse } from "./views/designCourse.js";
 import { renderEnglishClass } from "./views/englishClass.js";
 import { mountChatWidget, refreshChatWidgetIcon } from "./components/chatWidget.js";
-import { rerollMashIcon, mashIconUrl, iconOnerrorAttr } from "./lib/mashIcon.js";
+import {
+  rerollMashIcon,
+  mashLogoUrl,
+  iconOnerrorAttr,
+} from "./lib/mashIcon.js";
 
 const appRoot = () => document.getElementById("app");
 
@@ -101,7 +105,7 @@ function setupHeader() {
   if (!header) return;
   header.innerHTML = `
     <a class="brand" href="#/">
-      <img class="brand-logo" src="${mashIconUrl()}" alt="Rayshift Academy"
+      <img class="brand-logo" src="${mashLogoUrl()}" alt="Rayshift Academy"
         onerror="${iconOnerrorAttr()}" />
       <span class="brand-name">Rayshift&nbsp;Academy</span>
     </a>
@@ -181,6 +185,30 @@ async function boot() {
   window.addEventListener("orientationchange", onResize);
 
   await route();
+  hideSplash();
+}
+
+// ---------------------------------------------------------------------
+// スターティングアニメーション（ロゴ・スプラッシュ）を閉じる
+// ---------------------------------------------------------------------
+function hideSplash() {
+  const splash = document.getElementById("splash");
+  if (!splash) return;
+  const reduce =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const minMs = reduce ? 300 : 1900; // 最低表示時間（演出を見せる）
+  const wait = Math.max(0, minMs - performance.now());
+  const dismiss = () => {
+    splash.classList.add("is-hiding");
+    setTimeout(() => splash.remove(), 720);
+  };
+  const timer = setTimeout(dismiss, wait);
+  // クリック/タップでスキップ
+  splash.addEventListener("click", () => {
+    clearTimeout(timer);
+    dismiss();
+  });
 }
 
 function debounce(fn, ms) {

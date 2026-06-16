@@ -2609,6 +2609,106 @@ body {
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 10px 30px rgba(60, 40, 100, 0.08);
 }
 
+/* ---------- スターティングアニメーション（ロゴ・スプラッシュ） ---------- */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 120% at 50% 38%, #ffffff 0%, #faf7ff 55%, #f0eaf9 100%);
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.72s var(--ease-out), transform 0.72s var(--ease-out);
+  animation: splashSafety 0.6s var(--ease-out) 4.5s forwards; /* JS 不発時の保険 */
+}
+.splash.is-hiding {
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+.splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.splash-logo-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.splash-logo {
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
+  border-radius: 50%;
+  box-shadow: 0 14px 44px rgba(107, 79, 160, 0.32);
+  animation: splashLogoIn 1.05s var(--ease-spring) both;
+}
+.splash-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-soft-2);
+  opacity: 0;
+  animation: splashRing 1.9s var(--ease-out) 0.4s infinite;
+}
+.splash-ring-2 {
+  animation-delay: 1.35s;
+}
+.splash-word {
+  font-family: "Cinzel", "Raleway", serif;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 4.4vw, 1.7rem);
+  letter-spacing: 0.45em;
+  padding-left: 0.45em;
+  background: linear-gradient(120deg, var(--primary), var(--primary-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: splashWordIn 0.95s var(--ease-out) 0.4s both;
+}
+.splash-bar {
+  width: 156px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  overflow: hidden;
+}
+.splash-bar span {
+  display: block;
+  height: 100%;
+  width: 38%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  animation: splashBar 1.6s var(--ease-out) 0.35s both;
+}
+@keyframes splashLogoIn {
+  0% { opacity: 0; transform: scale(0.5) rotate(-16deg); filter: blur(7px); }
+  60% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes splashRing {
+  0% { opacity: 0.55; transform: scale(0.82); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+@keyframes splashWordIn {
+  from { opacity: 0; transform: translateY(12px); letter-spacing: 0.72em; }
+  to { opacity: 1; transform: translateY(0); letter-spacing: 0.45em; }
+}
+@keyframes splashBar {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(360%); }
+}
+@keyframes splashSafety {
+  to { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
 /* ---------- 動きを抑えたい環境では無効化 ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
